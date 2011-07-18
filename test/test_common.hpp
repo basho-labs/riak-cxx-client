@@ -18,6 +18,7 @@
 #define TEST_COMMON_HPP_
 
 #include <riak_client/cxx/riak_client.hpp>
+#include <stdio.h>
 
 struct TEST_INIT 
 {
