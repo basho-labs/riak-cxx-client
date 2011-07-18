@@ -18,7 +18,6 @@
 #define RIAKCXX_CLIENT_CONNECTION_HPP_
 
 #include "asio.hpp"
-#include "threads.hpp"
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/basic/response.hpp>
 #include <string>
@@ -44,7 +43,6 @@ private:
     std::string port_;
     io::io_service io_service_;
     io::tcp_socket socket_;
-    thread_ptr thread_;
 };
 
 

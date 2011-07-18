@@ -26,7 +26,7 @@
 
 namespace riak {
 
- template <typename T=object_ptr, class mutator=clobber_mutator<T>, class resolver=default_resolver>
+template <typename T=std::string, class mutator=clobber_mutator<T>, class resolver=default_resolver>
 class RIAKC_API store_object
 {
 public:
@@ -47,14 +47,21 @@ public:
         response<fetch_result> fr = client_->fetch(bkey_.bucket(), bkey_.key(), r_, r_);
         if (fr.error()) return fr.error();
         riak::object_ptr obj = resolver().resolve(fr.value());
-        T newval(mutator(val_)(obj->value()));
-        obj->update_value(newval);
+        if (obj)
+        {
+            obj->update_value(mutator(val_)(obj->value()));
+        }
+        else
+        {
+            obj.reset(new object(bkey_));
+            obj->update_value(val_);
+        }
         store_params sp;
         sp.dw(dw_);
         sp.w(w_);
         sp.return_body(return_body_);
         response<object_ptr> result(client_->store(obj, sp));
-        if (result.error()) throw;
+        if (result.error()) return result.error();
         return obj->value();
     }
 private:

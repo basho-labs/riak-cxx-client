@@ -25,9 +25,11 @@ namespace riak {
 
 struct RIAKC_API default_resolver
 {
-    object_ptr resolve(const fetch_result& object)
+    object_ptr resolve(const fetch_result& result)
     {
-        return object_ptr();
+        if (!result.sibling_count())
+            return object_ptr();
+        return result.choose_sibling(0);
     }
 };
 

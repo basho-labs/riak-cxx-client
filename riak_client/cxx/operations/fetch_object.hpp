@@ -25,7 +25,7 @@
 
 namespace riak { 
 
-template <typename T=object_ptr, class resolver=default_resolver>
+template <typename T=std::string, class resolver=default_resolver>
 struct RIAKC_API fetch_object
 {
     fetch_object(client_ptr client, const std::string& bucket,
@@ -40,9 +40,9 @@ public:
     
     response<T> operator()() { 
         response<fetch_result> result(client_->fetch(bucket_, key_, r_, r_));
-        if (result.error()) throw;
+        if (result.error()) return result.error();
         riak::object_ptr o(resolver().resolve(result));
-        return riak_object_cast(o);
+        return riak_object_cast<T>(o);
     }
     
 private:

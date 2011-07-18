@@ -31,7 +31,7 @@
 
 namespace riak {
 
-template <class T=object_ptr>
+template <class T=std::string>
 class RIAKC_API basic_bucket 
 {
 public:
@@ -60,6 +60,8 @@ private:
     std::string name_;
     client_ptr client_;
 };
+
+typedef basic_bucket<std::string> string_bucket;
 
 } // ::riak
 

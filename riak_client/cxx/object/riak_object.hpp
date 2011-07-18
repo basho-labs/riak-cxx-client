@@ -60,11 +60,16 @@ inline object_ptr make_object(const std::string& bucket,const std::string& key,
 }
 
 
-    //template <class T>
-    //T riak_object_cast(const object_ptr&);
+template <class T>
+T riak_object_cast(object_ptr p); 
 
-    //template<>
-inline object_ptr riak_object_cast(const object_ptr& obj) { return obj; }
+template <>
+inline std::string riak_object_cast<std::string>(object_ptr p) 
+{ 
+    if (!p)
+        return "";
+    return p->value(); 
+}
 
 } // ::riak
 

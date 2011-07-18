@@ -117,7 +117,6 @@ bool test_fetch()
         assert(fr.key() == strkey);
         assert(fr.contents().size() == 1);
         assert(fr.contents()[0].value() == strkey);
-        riak::object_ptr o = fr.choose_sibling(0);
     }
     return true;
 }
@@ -137,13 +136,23 @@ bool test_put()
     return true;
 }
 
+#include <boost/thread.hpp>
+
 bool test_client()
 {
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     riak::cluster cluster;
-    riak::client c(cluster.make_client());
-    riak::basic_bucket<> bucket = c.bucket<riak::object_ptr>("bucket");
-    riak::object_ptr o = bucket.fetch("foo").r(3)();
+    riak::client client(cluster.make_client());
+    riak::basic_bucket<std::string> bucket = client.bucket<std::string>("bucket");
+    bucket.del("foo").rw(2)();
+    std::string value = bucket.fetch("foo").r(3)();
+    assert(value == "");
+    value = bucket.store("foo", "bar")
+        .r(2)
+        .w(2)
+        .dw(2)();
+    value = bucket.fetch("foo").r(3)();
+    assert(value == "bar");
     return true;
 }
 

@@ -32,11 +32,11 @@ public:
     fetch_result(const riak_version& version, const content_vector& contents)
         : riak_version(version), contents_(contents) { }
 public:
-    object_ptr    choose(const riak_content& content)
+    object_ptr    choose(const riak_content& content) const
     {
         return object_ptr(new riak::object(*this, content));
     }
-    object_ptr    choose_sibling(std::size_t idx)
+    object_ptr    choose_sibling(std::size_t idx) const
     {
         if (idx > (contents_.size() - 1))
             throw riak::exception("invalid sibling index");

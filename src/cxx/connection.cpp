@@ -16,7 +16,6 @@
 
 #include "connection.hpp"
 #include <riak_client/cxx/error.hpp>
-#include <boost/thread.hpp>
 
 namespace riak { 
 using namespace boost::posix_time;
@@ -28,9 +27,7 @@ connection::connection(string host, string port)
     : host_(host),
       port_(port),
       io_service_(),
-      socket_(io_service_),
-      thread_(new boost::thread(boost::bind(&io::io_service::run, 
-                                            &io_service_)))
+      socket_(io_service_)
 {
 }
 
@@ -38,7 +35,6 @@ connection::~connection()
 {
     socket_.close();
     io_service_.stop();
-    thread_->join();
 }
 
 response<bool>

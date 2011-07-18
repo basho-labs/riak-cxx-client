@@ -279,7 +279,7 @@ libriak_client_la_SOURCES = src/cxx/pbc_client.cpp \
 			    src/client.cpp \
                             src/string_list.cpp
 
-libriak_client_la_CXXFLAGS = -Ibuild/deps/include $(CFLAG_VISIBILITY) 
+libriak_client_la_CXXFLAGS = -g3 -Ibuild/deps/include $(CFLAG_VISIBILITY) 
 libriak_client_la_LDFLAGS = -Lbuild/deps/lib -lprotobuf-lite -lriakboost_system-mt-riak_client -lriakboost_thread-mt-riak_client  -version-info 1:0:0 -no-undefined
 riak_client_includedir = $(includedir)/riak_client/cxx
 nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
