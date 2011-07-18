@@ -18,21 +18,26 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/riak_client_fwd.hpp \
 			 riak_client/cxx/common.hpp \
 			 riak_client/cxx/error.hpp \
+			 riak_client/cxx/basic.hpp \
 			 riak_client/cxx/basic/basic_client.hpp \
 			 riak_client/cxx/basic/bucket_properties.hpp \
 			 riak_client/cxx/basic/fetch_result.hpp \
 			 riak_client/cxx/basic/response.hpp \
 			 riak_client/cxx/basic/store_params.hpp \
+			 riak_client/cxx/client.hpp \
 			 riak_client/cxx/client/client.hpp \
 			 riak_client/cxx/client/bucket.hpp \
 			 riak_client/cxx/client/resolver.hpp \
+			 riak_client/cxx/object.hpp
 			 riak_client/cxx/object/riak_content.hpp \
 		 	 riak_client/cxx/object/riak_metadata.hpp \
 			 riak_client/cxx/object/riak_object.hpp \
 			 riak_client/cxx/object/riak_version.hpp \
+			 riak_client/cxx/operations.hpp \
 			 riak_client/cxx/operations/fetch_object.hpp \
 			 riak_client/cxx/operations/delete_object.hpp \
 			 riak_client/cxx/operations/store_object.hpp \
+			 riak_client/cxx/util.hpp \
 			 riak_client/cxx/util/shared_ptr.hpp \
 			 riak_client/cxx/util/noncopyable.hpp \
 			 riak_client/client.h \

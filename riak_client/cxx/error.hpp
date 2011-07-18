@@ -47,7 +47,7 @@ public:  // conversions
 class RIAKC_API exception : public std::exception
 {
 public:
-    exception(const std::string message)
+    exception(const std::string& message)
         : error_(0, message) { }
     exception(const riak_error& error)
         : error_(error) { }
