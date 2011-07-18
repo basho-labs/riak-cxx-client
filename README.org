@@ -3,6 +3,12 @@
 
 This is a WIP of a C/C++ client for Riak. 
 
+- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/cxx/basic/basic_client.hpp][Basic API]]
+- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/cxx/client/client.hpp][High-level client API]]
+- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/client.h][C API]]
+- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/test/test_basic.cpp][Sample Code]]
+
+
 - protobufs only
 - no links or MR
 - basic client and high-level client inspired by the new java client
@@ -12,10 +18,7 @@ This is a WIP of a C/C++ client for Riak.
 - needs WAY more tests
 
 
-- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/cxx/basic/basic_client.hpp][Basic API]]
-- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/cxx/client/client.hpp][High-level client API]]
-- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/client.h][C API]]
-- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/test/test_basic.cpp][C API]]
+
 
 Minimal API documentation is available at [[http://argv0.github.com/riak-cxx-client][Github]].
 
