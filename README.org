@@ -3,13 +3,13 @@
 
 This is a WIP of a C/C++ client for Riak. 
 
-* protobufs only
-* no links or MR
-* basic client and high-level client inspired by the new java client
-* basic client is complete, high-level client in progress
-* C wrapper in progress
-* embedded deps (protobufs, boost::asio)
-* needs WAY more tests
+- protobufs only
+- no links or MR
+- basic client and high-level client inspired by the new java client
+- basic client is complete, high-level client in progress
+- C wrapper in progress
+- embedded deps (protobufs, boost::asio)
+- needs WAY more tests
 
 basic client api: #include <riak_client/cxx/basic.hpp>
 high-level   api: #include <riak_client/cxx/client.hpp>
