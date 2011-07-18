@@ -11,9 +11,9 @@ This is a WIP of a C/C++ client for Riak.
 - embedded deps (protobufs, boost::asio)
 - needs WAY more tests
 
-basic client api: #include <riak_client/cxx/basic.hpp>
-high-level   api: #include <riak_client/cxx/client.hpp>
-C api:  #include <riak_client/client.h>
+- basic client api: #include <riak_client/cxx/basic.hpp>
+- high-level   api: #include <riak_client/cxx/client.hpp>
+- C api:  #include <riak_client/client.h>
 
 sample code: test/test_basic.cpp
 
