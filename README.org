@@ -1,0 +1,55 @@
+* Riak C/C++ Client
+** Overview
+
+This is a WIP of a C/C++ client for Riak. 
+
+* protobufs only
+* no links or MR
+* basic client and high-level client inspired by the new java client
+* basic client is complete, high-level client in progress
+* C wrapper in progress
+* embedded deps (protobufs, boost::asio)
+* needs WAY more tests
+
+basic client api: #include <riak_client/cxx/basic.hpp>
+high-level   api: #include <riak_client/cxx/client.hpp>
+C api:  #include <riak_client/client.h>
+
+sample code: test/test_basic.cpp
+
+Minimal API documentation is available at [[http://argv0.github.com/riak-cxx-client][Github]].
+
+** Quick Start
+
+#+BEGIN_SRC shell
+./configure
+make
+make check
+sudo make install
+#+END_SRC
+
+** Contributing
+   We encourage contributions from the community.
+
+   1) Fork the =riak-cxx-client= repository on [[https://github.com/basho/riak-cxx-client][Github]].
+   2) Clone your fork or add the remote if you already have a clone of
+      the repository.
+#+BEGIN_SRC shell
+git clone git@github.com:yourusername/riak-cxx-client.git
+# or
+git remote add mine git@github.com:yourusername/riak-cxx-client.git
+#+END_SRC
+   3) Create a topic branch for your change.
+#+BEGIN_SRC shell
+git checkout -b some-topic-branch
+#+END_SRC
+   4) Make your change and commit. Use a clear and descriptive commit
+      message, spanning multiple lines if detailed explanation is
+      needed.
+   5) Push to your fork of the repository and then send a pull-request
+      through Github.
+#+BEGIN_SRC shell
+git push mine some-topic-branch
+#+END_SRC
+   6) A Basho engineer or community maintainer will review your patch
+      and merge it into the main repository or send you feedback.
