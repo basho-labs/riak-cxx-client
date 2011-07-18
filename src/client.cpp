@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include <cstddef>
 #include <cstdlib>
+#include <string.h>
 #include <sys/errno.h>
 #include "internal.h"
 

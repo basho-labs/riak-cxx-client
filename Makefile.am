@@ -55,7 +55,6 @@ riak_cxx_simple_test_SOURCES = test/test_basic.cpp
 riak_cxx_simple_test_CXXFLAGS = $(libriak_client_la_CXXFLAGS)
 riak_cxx_simple_test_LDFLAGS = -lriak_client
 
-CLEANFILES = build/riakclient-pb/src/cxx/riakclient.pb.cc $(check_PROGRAMS)
-DISTCLEANFILES = build/riakclient-pb/src/cxx/riakclient.pb.cc
+CLEANFILES = $(check_PROGRAMS)
 SUBDIRS = deps
 DIST_SUBDIRS = deps

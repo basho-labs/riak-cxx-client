@@ -142,7 +142,7 @@ bool test_client()
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     riak::cluster cluster;
     riak::client c(cluster.make_client());
-    riak::basic_bucket<> bucket = c.bucket<riak::object_ptr>("fuckyou");
+    riak::basic_bucket<> bucket = c.bucket<riak::object_ptr>("bucket");
     riak::object_ptr o = bucket.fetch("foo").r(3)();
     return true;
 }
