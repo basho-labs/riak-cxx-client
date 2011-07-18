@@ -6,8 +6,17 @@ This is a WIP of a C/C++ client for Riak.
 - [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/cxx/basic/basic_client.hpp][Basic API]]
 - [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/cxx/client/client.hpp][High-level client API]]
 - [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/client.h][C API]]
-- [[https://github.com/basho/riak-cxx-client/blob/master/riak_client/test/test_basic.cpp][Sample Code]]
+- [[https://github.com/basho/riak-cxx-client/blob/master/test/test_basic.cpp][Sample Code]]
 
+#+BEGIN_SRC shell
+
+/* fetch an object */
+riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
+riak::fetch_result fr = c->fetch("mybucket", "mykey", 2);
+riak::object_ptr o = fr.choose_sibling(0);
+assert(o->key() == "mykey");
+
+#+END_SRC
 
 - protobufs only
 - no links or MR
@@ -15,6 +24,7 @@ This is a WIP of a C/C++ client for Riak.
 - basic client is complete, high-level client in progress
 - C wrapper in progress
 - embedded deps (protobufs, boost::asio)
+- autotools build
 - needs WAY more tests
 
 
