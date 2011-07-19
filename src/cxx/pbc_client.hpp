@@ -31,16 +31,16 @@ public:
     virtual ~pbc_client();
 public:
     response<bool> ping();
-
+    
     response<bool> del(const std::string& bucket, const std::string& key, 
                        int dw);
     response<bool> set_bucket(const std::string& bucket, 
                               const bucket_properties& properties);
     response<bool> client_id(uint32_t client_id);
-    response<uint32_t> client_id();
-    response<fetch_result> fetch(const std::string& bucket, 
-                                       const std::string& key, int r, int pr);
-    response<object_ptr> store(object_ptr object, const store_params& params);
+    response<uint32_t>      client_id();
+    response<riak_result>  fetch(const std::string& bucket, 
+                                 const std::string& key, int r, int pr);
+    response<riak_result>  store(object_ptr object, const store_params& params);
     response<string_vector> list_buckets();
     response<string_vector> list_keys(const std::string& bucket);
     response<bucket_properties> fetch_bucket(const std::string& bucket);

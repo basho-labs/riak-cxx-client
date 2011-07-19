@@ -18,7 +18,7 @@
 #define RIAKCXX_BASIC_CLIENT_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
-#include <riak_client/cxx/basic/fetch_result.hpp>
+#include <riak_client/cxx/basic/riak_result.hpp>
 #include <riak_client/cxx/basic/response.hpp>
 #include <riak_client/cxx/basic/bucket_properties.hpp>
 #include <riak_client/cxx/basic/store_params.hpp>
@@ -32,7 +32,7 @@ class RIAKC_API basic_client
 {
 public:
     virtual response<bool> ping() = 0;
-    virtual response<fetch_result> fetch(const std::string& bucket,
+    virtual response<riak_result> fetch(const std::string& bucket,
             const std::string& key, int r, int pr) =0;
     virtual response<bool> del(const std::string& bucket,
             const std::string& key, int dw) = 0;
@@ -42,7 +42,7 @@ public:
             const bucket_properties& properties) = 0;
     virtual response<uint32_t> client_id() = 0;
     virtual response<bool> client_id(uint32_t client_id) = 0;
-    virtual response<object_ptr> store(object_ptr object,
+    virtual response<riak_result> store(object_ptr object,
             const store_params& params) = 0;
     virtual response<string_vector> list_buckets() = 0;
     virtual response<string_vector> list_keys(const std::string& bucket) = 0;

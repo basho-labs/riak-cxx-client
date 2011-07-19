@@ -17,7 +17,6 @@
 #ifndef RIAKCXX_STORE_OBJECT_HPP_
 #define RIAKCXX_STORE_OBJECT_HPP_
 
-
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/basic/basic_client.hpp>
 #include <riak_client/cxx/client/resolver.hpp>
@@ -27,24 +26,23 @@
 namespace riak {
 
 template <typename T=std::string, class mutator=clobber_mutator<T>, class resolver=default_resolver>
-class RIAKC_API store_object
+class RIAKC_API store_object 
 {
 public:
     store_object(client_ptr c, const std::string& bucket,
                  const std::string& key)
-        : client_(c), bkey_(bucket, key), dw_(2), w_(2), r_(2), 
-              return_body_(false) { }
+        : client_(c), bkey_(bucket, key), r_(2) {}
 public:
-    store_object<T>& dw(int dw) { dw_ = dw; return *this; }
-    store_object<T>& return_body(bool val) { return_body_ = val; return *this;}
+    store_object<T>& dw(int dw) { sp_.dw(dw); return *this; }
+    store_object<T>& w(int w) { sp_.w(w); return *this; }
     store_object<T>& r(int r) { r_ = r; return *this; }
-    store_object<T>& w(int w) { w_ = w; return *this; }
+    store_object<T>& return_body(bool val) { sp_.return_body(val); return *this;}
     store_object<T>& with_value(const T& value) { val_ = value; }
     store_object<T>& with_mutator();
     store_object<T>& with_resolver();
  public:
     response<T> operator()() { 
-        response<fetch_result> fr = client_->fetch(bkey_.bucket(), bkey_.key(), r_, r_);
+        response<riak_result> fr = client_->fetch(bkey_.bucket(), bkey_.key(), r_, r_);
         if (fr.error()) return fr.error();
         riak::object_ptr obj = resolver().resolve(fr.value());
         if (obj)
@@ -56,21 +54,15 @@ public:
             obj.reset(new object(bkey_));
             obj->update_value(val_);
         }
-        store_params sp;
-        sp.dw(dw_);
-        sp.w(w_);
-        sp.return_body(return_body_);
-        response<object_ptr> result(client_->store(obj, sp));
+        response<riak_result> result(client_->store(obj, sp_));
         if (result.error()) return result.error();
         return obj->value();
     }
 private:
     client_ptr client_;
     riak_bkey bkey_;
-    int dw_;
-    int w_;
+    store_params sp_;
     int r_;
-    bool return_body_;
     T val_;
 };
 

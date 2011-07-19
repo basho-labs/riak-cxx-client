@@ -111,13 +111,8 @@ bool test_fetch()
 {
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
-    for (int i=0;i<100;++i) {
-        std::string strkey = boost::lexical_cast<std::string>(i);
-        riak::fetch_result fr = c->fetch(TEST_BUCKET, strkey, 3, 3);
-        assert(fr.key() == strkey);
-        assert(fr.contents().size() == 1);
-        assert(fr.contents()[0].value() == strkey);
-    }
+    riak::riak_result fr = c->fetch(TEST_BUCKET, TEST_KEY, 3, 3);
+    assert(fr.contents()[0].value() == TEST_KEY);
     return true;
 }
 
@@ -126,13 +121,10 @@ bool test_put()
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
     riak::store_params sp;
-    sp.w(3);
-    sp.dw(3);
-    for (int i=0;i<100;++i) {
-        std::string strkey = boost::lexical_cast<std::string>(i);        
-        riak::object_ptr o(riak::make_object(TEST_BUCKET, strkey, strkey));
-        riak::object_ptr r = c->store(o, sp);
-    }
+    sp.w(3).dw(3).return_body(true);
+    riak::object_ptr o(riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY));
+    riak::riak_result r = c->store(o, sp);
+    riak::object_ptr o2(r.choose_sibling(0));
     return true;
 }
 

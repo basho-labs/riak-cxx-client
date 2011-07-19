@@ -18,14 +18,14 @@
 #define RIAKCXX_RESOLVER_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
-#include <riak_client/cxx/basic/fetch_result.hpp>
+#include <riak_client/cxx/basic/riak_result.hpp>
 #include <riak_client/cxx/object/riak_object.hpp>
 
 namespace riak { 
 
 struct RIAKC_API default_resolver
 {
-    object_ptr resolve(const fetch_result& result)
+    object_ptr resolve(const riak_result& result)
     {
         if (!result.sibling_count())
             return object_ptr();

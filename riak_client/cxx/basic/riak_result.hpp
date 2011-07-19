@@ -14,8 +14,8 @@
  limitations under the License.
  */
 
-#ifndef RIAKCXX_FETCH_RESULT_HPP_
-#define RIAKCXX_FETCH_RESULT_HPP_
+#ifndef RIAKCXX_RIAK_RESULT_HPP_
+#define RIAKCXX_RIAK_RESULT_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/error.hpp>
@@ -23,13 +23,13 @@
 
 namespace riak { 
 
-class RIAKC_API fetch_result : public riak_version
+class RIAKC_API riak_result : public riak_version
 {
 public:
-    explicit fetch_result() { }
-    explicit fetch_result(const riak_version& version)
+    explicit riak_result() { }
+    explicit riak_result(const riak_version& version)
         : riak_version(version) { }
-    fetch_result(const riak_version& version, const content_vector& contents)
+    riak_result(const riak_version& version, const content_vector& contents)
         : riak_version(version), contents_(contents) { }
 public:
     object_ptr    choose(const riak_content& content) const
@@ -38,6 +38,7 @@ public:
     }
     object_ptr    choose_sibling(std::size_t idx) const
     {
+        if (!contents_.size()) return object_ptr();
         if (idx > (contents_.size() - 1))
             throw riak::exception("invalid sibling index");
         return choose(contents_[idx]);

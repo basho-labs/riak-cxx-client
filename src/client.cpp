@@ -31,7 +31,7 @@ struct riak_client_t
 
 struct riak_object_t
 {
-    riak::fetch_result p;
+    riak::riak_result p;
 };
 
 riak_client riak_client_new(const char* host, const char *port)
@@ -126,13 +126,13 @@ string_list riak_list_keys(riak_client c, const char* bucket)
 
 riak_object riak_get(riak_client c, const char* bucket, const char *key)
 {
-    riak::response<riak::fetch_result> response = c->p->fetch(bucket, key, 2, 2);
+    riak::response<riak::riak_result> response = c->p->fetch(bucket, key, 2, 2);
     if (response.error())
     {
         errno = response.error().code();
         return 0;
     }
-    riak::fetch_result fr = response.value();
+    riak::riak_result fr = response.value();
     if (fr.empty()) return 0;
     riak_object_t* result = new riak_object_t;
     result->p = fr;
@@ -156,7 +156,7 @@ const char* riak_object_get_bucket(riak_object o)
 
 const vclock riak_object_get_vclock(riak_object o)
 {
-    riak::fetch_result obj = o->p;
+    riak::riak_result obj = o->p;
     std::string vstr = obj.vclock();
     if (vstr.empty()) 
         return 0;

@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,27 @@
  limitations under the License.
  */
 
-#ifndef RIAKCXX_BASIC_HPP_
-#define RIAKCXX_BASIC_HPP_
+#ifndef RIAKCXX_QUORUM_HPP_
+#define RIAKCXX_QUORUM_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
-#include <riak_client/cxx/basic/basic_client.hpp>
-#include <riak_client/cxx/basic/bucket_properties.hpp>
-#include <riak_client/cxx/basic/riak_result.hpp>
-#include <riak_client/cxx/basic/quorum.hpp>
-#include <riak_client/cxx/basic/response.hpp>
-#include <riak_client/cxx/basic/store_params.hpp>
+
+namespace riak { 
+
+    struct quora 
+    {
+        quora() : qval_(-1) {}
+        quora(int val) : qval_(val) {}
+        operator int() const { return qval_; }
+    private:
+        int qval_;
+    };
+
+    struct ONE : quora {};
+    struct ALL : quora {};
+    struct QUORUM : quora {};
+    struct DEFAULT : quora {}; 
+    
+} // :: riak
 
 #endif // include guard

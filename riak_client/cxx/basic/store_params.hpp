@@ -17,6 +17,8 @@
 #ifndef RIAKCXX_STORE_PARAMS_HPP_
 #define RIAKCXX_STORE_PARAMS_HPP_
 
+#include <riak_client/cxx/basic/quorum.hpp>
+
 namespace riak { 
 
 class RIAKC_API store_params 
@@ -25,19 +27,23 @@ public:
     store_params()
         : w_(-1), dw_(-1), pw_(-1), return_body_(false) { }
 public: // accessors
-    int  w() const { return w_; }
-    int  dw() const { return dw_; }
-    int  pw() const { return pw_; }
+    quora w() const { return w_; }
+    quora dw() const { return dw_; }
+    quora pw() const { return pw_; }
     bool return_body() const { return return_body_; }
 public: // mutators
-    void w(int w) { w_ = w; }
-    void dw(int dw) { dw_ = dw; }
-    void pw(int pw) { pw_ = pw; }
-    void return_body(bool returnbody) { return_body_ = returnbody; }
+    store_params& w(quora w) { w_ = w; return *this;}
+    store_params& dw(quora dw) { dw_ = dw; return *this;}
+    store_params& pw(quora pw) { pw_ = pw; return *this; }
+    store_params& return_body(bool returnbody) 
+    { 
+        return_body_ = returnbody; 
+        return *this;
+    }
 private: // intentionally copyable
-    int w_;
-    int dw_;
-    int pw_;
+    quora w_;
+    quora dw_;
+    quora pw_;
     bool return_body_;
 };
 

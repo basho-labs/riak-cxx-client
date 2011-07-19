@@ -25,6 +25,52 @@ namespace riak { namespace pbc {
 
 using std::string;
 
+void encode_object(const object_ptr obj, ops::put::request_type& req)
+{
+    req.set_bucket(obj->bucket());
+    req.set_key(obj->key());
+    req.set_vclock(obj->vclock());
+    RpbContent* c = req.mutable_content();
+    c->set_value(obj->update_content().value());
+    c->set_content_type(obj->update_metadata().content_type());
+    c->set_content_encoding(obj->update_metadata().encoding());
+    c->set_charset(obj->update_metadata().charset());
+    c->set_vtag(obj->update_metadata().vtag());
+    c->set_last_mod(obj->update_metadata().lastmod().first);
+    c->set_last_mod_usecs(obj->update_metadata().lastmod().second);
+    for (string_map::const_iterator it = obj->update_metadata().usermeta().begin() ;
+         it != obj->update_metadata().usermeta().end();
+         ++it)
+    {
+        RpbPair *entry = c->add_usermeta();
+        entry->set_key((*it).first);
+        entry->set_value((*it).second);
+    }
+}
+
+template <class T>
+void decode_contents(const T& response, content_vector& contents)
+{
+    for (int i=0;i<response.content_size();++i)
+    {
+        RpbContent content = response.content(i);
+        string_map usermeta;
+        for (int j=0;j<content.usermeta_size();++j) 
+        {
+            RpbPair pb_metadata = content.usermeta(j);
+            usermeta[pb_metadata.key()] = pb_metadata.value();
+        }
+        riak_metadata md(usermeta);
+        md.content_type(content.content_type());
+        md.charset(content.charset());
+        md.encoding(content.content_encoding());
+        md.vtag(content.vtag());
+        md.lastmod(content.last_mod(), content.last_mod_usecs());
+        contents.push_back(riak_content(md, content.value()));
+    }
+}
+
+
 const pbc_header 
 pbc_recv_header(connection_ptr c, riak_error& error) 
 {
@@ -102,7 +148,8 @@ pbc_client::del(const string& bucket, const string& key, int dw)
     return true;
 }
 
-response<fetch_result>   
+
+response<riak_result>   
 pbc_client::fetch(const string& bucket, const string& key, int r, int pr)
 {
     ops::get operation;
@@ -111,27 +158,10 @@ pbc_client::fetch(const string& bucket, const string& key, int r, int pr)
     operation.request().set_r(r);
     riak_error error = execute(connection_, operation);
     if (error) return error;
-    ops::get::response_type resp(operation.response());
     content_vector contents;
-    for (int i=0;i<resp.content_size();++i)
-    {
-        RpbContent content = resp.content(i);
-        string_map usermeta;
-        for (int j=0;j<content.usermeta_size();++j) 
-        {
-            RpbPair pb_metadata = content.usermeta(j);
-            usermeta[pb_metadata.key()] = pb_metadata.value();
-        }
-        riak_metadata md(usermeta);
-        md.content_type(content.content_type());
-        md.charset(content.charset());
-        md.encoding(content.content_encoding());
-        md.vtag(content.vtag());
-        md.lastmod(content.last_mod(), content.last_mod_usecs());
-        contents.push_back(riak_content(md, content.value()));
-    }
-    riak_version version(riak_bkey(bucket, key), resp.vclock());
-    return fetch_result(version, contents);
+    decode_contents(operation.response(), contents);
+    riak_version version(riak_bkey(bucket, key), operation.response().vclock());
+    return riak_result(version, contents);
 }
 
 response<bool>
@@ -182,42 +212,21 @@ pbc_client::client_id(uint32_t client_id)
     }
 
 
-void from_object_ptr(object_ptr obj, ops::put::request_type& req)
-{
-    req.set_bucket(obj->bucket());
-    req.set_key(obj->key());
-    req.set_vclock(obj->vclock());
-    RpbContent* c = req.mutable_content();
-    c->set_value(obj->update_content().value());
-    c->set_content_type(obj->update_metadata().content_type());
-    c->set_content_encoding(obj->update_metadata().encoding());
-    c->set_charset(obj->update_metadata().charset());
-    c->set_vtag(obj->update_metadata().vtag());
-    c->set_last_mod(obj->update_metadata().lastmod().first);
-    c->set_last_mod_usecs(obj->update_metadata().lastmod().second);
-    for (string_map::const_iterator it = obj->update_metadata().usermeta().begin() ;
-         it != obj->update_metadata().usermeta().end();
-         ++it)
-    {
-        RpbPair *entry = c->add_usermeta();
-        entry->set_key((*it).first);
-        entry->set_value((*it).second);
-    }
-}
 
-
-response<object_ptr>
+response<riak_result>
 pbc_client::store(object_ptr obj, const store_params& params)
 {
     ops::put operation;
-    from_object_ptr(obj, operation.request());
+    encode_object(obj, operation.request());
     operation.request().set_w(params.w());
     operation.request().set_dw(params.dw());
     operation.request().set_return_body(params.return_body());
     riak_error error = execute(connection_, operation);
     if (error) return error;
-    object_ptr o;
-    return o;
+    content_vector contents;
+    decode_contents(operation.response(), contents);
+    riak_version version(riak_bkey(obj->bucket(), obj->key()));
+    return riak_result(version, contents);
 }
 
 response<string_vector>

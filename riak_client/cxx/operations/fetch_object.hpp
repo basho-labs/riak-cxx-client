@@ -39,7 +39,7 @@ public:
     }
     
     response<T> operator()() { 
-        response<fetch_result> result(client_->fetch(bucket_, key_, r_, r_));
+        response<riak_result> result(client_->fetch(bucket_, key_, r_, r_));
         if (result.error()) return result.error();
         riak::object_ptr o(resolver().resolve(result));
         return riak_object_cast<T>(o);
