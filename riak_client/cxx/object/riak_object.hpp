@@ -37,10 +37,12 @@ public: // accessors
     const riak_content&  content() const { return content_; }   
     const std::string&   value() const { return content_.value(); }
     const riak_metadata& metadata() const { return content_.metadata(); }
-    const riak_metadata& update_metadata() { return update_content_.metadata(); }
+    const riak_metadata& update_metadata() const { return update_content_.metadata(); }
+public: // mutators
     riak_content&        update_content() { return update_content_; }
     void                 update_value(const std::string& value) { update_content_.value(value); }
-    void                 update_metadata(const riak_metadata& md) { content_.metadata(md); }
+    void                 update_metadata(const riak_metadata& md) { update_content_.metadata(md); }
+    void                 debug_print() const;
 private: // intentionally copyable
     riak_content content_;
     riak_content update_content_;     

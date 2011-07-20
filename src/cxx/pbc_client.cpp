@@ -25,7 +25,7 @@ namespace riak { namespace pbc {
 
 using std::string;
 
-void encode_object(const object_ptr obj, ops::put::request_type& req)
+void encode_object(object_ptr obj, ops::put::request_type& req)
 {
     req.set_bucket(obj->bucket());
     req.set_key(obj->key());
@@ -121,6 +121,7 @@ pbc_client::pbc_client(const string& host, const string& port)
     : connection_(new connection(host, port))
 {
     connection_->start();
+    client_id(tss_client_id());
 }
 
 pbc_client::~pbc_client()
@@ -209,7 +210,7 @@ pbc_client::client_id(uint32_t client_id)
     riak_error error = execute(connection_, operation);
     if (error) return error;
     return true;
-    }
+}
 
 
 
@@ -225,7 +226,7 @@ pbc_client::store(object_ptr obj, const store_params& params)
     if (error) return error;
     content_vector contents;
     decode_contents(operation.response(), contents);
-    riak_version version(riak_bkey(obj->bucket(), obj->key()));
+    riak_version version(riak_bkey(obj->bucket(), obj->key()), operation.response().vclock());
     return riak_result(version, contents);
 }
 

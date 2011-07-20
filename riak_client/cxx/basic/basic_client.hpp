@@ -28,6 +28,8 @@
 namespace riak
 {
 
+typedef uint32_t client_id_t;
+
 class RIAKC_API basic_client
 {
 public:
@@ -40,8 +42,8 @@ public:
             const std::string& bucket) = 0;
     virtual response<bool> set_bucket(const std::string& bucket,
             const bucket_properties& properties) = 0;
-    virtual response<uint32_t> client_id() = 0;
-    virtual response<bool> client_id(uint32_t client_id) = 0;
+    virtual response<client_id_t> client_id() = 0;
+    virtual response<bool> client_id(client_id_t client_id) = 0;
     virtual response<riak_result> store(object_ptr object,
             const store_params& params) = 0;
     virtual response<string_vector> list_buckets() = 0;
@@ -52,6 +54,8 @@ enum RIAKC_API protocol
 {
     PBC
 };
+
+RIAKC_API client_id_t tss_client_id();
 
 
 RIAKC_API client_ptr new_client(const std::string& host,

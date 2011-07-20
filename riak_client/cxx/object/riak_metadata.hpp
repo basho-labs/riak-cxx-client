@@ -66,9 +66,11 @@ public:
     void encoding(const std::string& encoding);
     // Set the vtag.
     void vtag(const std::string& vtag);
+    void usermeta(const string_map& usermeta);
     // Set the last-modified time.
     void lastmod(lastmod_time_t lastmod);
     void lastmod(uint32_t secs, uint32_t usecs);
+    void debug_print() const;
 private: 
     string_map  usermeta_;
     std::string content_type_;
@@ -130,6 +132,12 @@ inline void
 riak_metadata::encoding(const std::string& encoding) 
 { 
    encoding_ = encoding; 
+}
+
+inline void 
+riak_metadata::usermeta(const string_map& usermeta)
+{
+    usermeta_ = usermeta;
 }
 
 inline void 

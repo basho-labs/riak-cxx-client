@@ -34,8 +34,10 @@ public: // constructors
 public: // accessors
     const std::string&   value() const { return value_; }
     const riak_metadata& metadata() const { return metadata_; }
+public:  // mutators
     void  value(const std::string& value) { value_ = value; }
     void  metadata(const riak_metadata& md) { metadata_ = md; }
+    void  debug_print() const;
 private: // intentionally copyable
     riak_metadata metadata_;
     std::string value_;

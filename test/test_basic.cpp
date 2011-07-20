@@ -27,22 +27,6 @@ using std::string;
 static const std::string TEST_BUCKET("riak-cxx-test");
 static const std::string TEST_KEY("riak-cxx-test");
 
-void print_content(riak::riak_content c) 
-{
-    std::cout << "content type: " <<c.metadata().content_type() << std::endl;
-    std::cout << "charset: " << c.metadata().charset() << std::endl;
-    std::cout << "encoding: " << c.metadata().encoding() << std::endl;
-    std::cout << "vtag: " << c.metadata().vtag() << std::endl;
-    std::cout << "value: " << c.value() << std::endl;
-}
-
-void print_object(riak::object_ptr o) 
-{
-    std::cout << "bucket: " << o->bucket() << std::endl;
-    std::cout << "key: " << o->key() << std::endl;
-    print_content(o->content());
-}
-
 bool test_pbc_client()
 {
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__); 
@@ -119,12 +103,25 @@ bool test_fetch()
 bool test_put()
 {
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
+    std::cout << riak::tss_client_id() << std::endl;
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
+    c->client_id(42);
     riak::store_params sp;
     sp.w(3).dw(3).return_body(true);
-    riak::object_ptr o(riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY));
+    riak::riak_result fetch_result = c->fetch(TEST_BUCKET, TEST_KEY, 2, 2);
+    riak::object_ptr o;
+    if (fetch_result.not_found()) 
+        o = riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY);
+    else 
+        o = fetch_result.choose_sibling(0);
+    o->debug_print();
+    riak::string_map usermeta(o->update_metadata().usermeta());
+    usermeta["foo"] = "bar";
+    riak::riak_metadata md(usermeta);
+    o->update_metadata(md);
     riak::riak_result r = c->store(o, sp);
     riak::object_ptr o2(r.choose_sibling(0));
+    o2->debug_print();
     return true;
 }
 
@@ -150,15 +147,15 @@ bool test_client()
 
 int main(int argc, char *argv[]) {
        if (
-           test_client() && 
-           test_pbc_client() &&
-           test_set_bucket() &&
-           test_fetch_bucket() &&
-           test_put() &&
-           test_fetch() &&
-           test_list_buckets() &&
-           test_list_keys() &&
-           test_del()  
+           //test_client() && 
+           //test_pbc_client() &&
+           //test_set_bucket() &&
+           //test_fetch_bucket() &&
+           test_put() // &&
+           //test_fetch() &&
+           //test_list_buckets() &&
+           //test_list_keys()
+           //test_del()  
            )
            return 0;
     return 1;

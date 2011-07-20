@@ -16,8 +16,23 @@
 
 #include <riak_client/cxx/basic/basic_client.hpp>
 #include "pbc_client.hpp"
+#include <boost/thread/thread.hpp>
+#include <functional>
+#include <tr1/functional>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace riak {
+
+uint32_t tss_client_id() 
+{
+    std::stringstream ostr;
+    ostr << boost::this_thread::get_id();
+    std::tr1::hash<std::string> h;
+    return h(ostr.str());
+}
+
 
 client_ptr new_client(const std::string& host, const std::string& port, const protocol p)
 {

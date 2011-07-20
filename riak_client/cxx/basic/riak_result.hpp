@@ -43,7 +43,7 @@ public:
             throw riak::exception("invalid sibling index");
         return choose(contents_[idx]);
     }
-    bool          empty() const { return contents_.empty(); }
+    bool          not_found() const { return contents_.empty(); }
     std::size_t   sibling_count() const { return contents_.size(); }
     const content_vector& contents() const { return contents_; }
     operator object() 

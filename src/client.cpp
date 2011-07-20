@@ -133,7 +133,7 @@ riak_object riak_get(riak_client c, const char* bucket, const char *key)
         return 0;
     }
     riak::riak_result fr = response.value();
-    if (fr.empty()) return 0;
+    if (fr.not_found()) return 0;
     riak_object_t* result = new riak_object_t;
     result->p = fr;
     return result;
