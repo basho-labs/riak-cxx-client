@@ -52,9 +52,6 @@ private:
     int r_;
 };
 
-
-
-
 } // ::riak
 
 #endif // include guard

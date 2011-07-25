@@ -42,7 +42,6 @@ private: // intentionally copyable
     riak_metadata metadata_;
     std::string value_;
 };
-
 typedef std::vector<riak_content> content_vector;
 
 } // ::riak

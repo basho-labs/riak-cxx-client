@@ -18,12 +18,11 @@
 #include <riak_client/cxx/error.hpp>
 
 namespace riak { 
-using namespace boost::posix_time;
+
 namespace error = riakboost::asio::error;
 using boost::system::error_code;
-using std::string;
 
-connection::connection(string host, string port)
+connection::connection(const std::string& host, const std::string& port)
     : host_(host),
       port_(port),
       io_service_(),

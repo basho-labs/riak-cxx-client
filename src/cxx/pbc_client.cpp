@@ -70,7 +70,6 @@ void decode_contents(const T& response, content_vector& contents)
     }
 }
 
-
 const pbc_header 
 pbc_recv_header(connection_ptr c, riak_error& error) 
 {
@@ -89,7 +88,6 @@ pbc_recv_header(connection_ptr c, riak_error& error)
     }
     return header;
 }
-
 
 template <class Message>
 std::size_t pbc_recv(connection_ptr c,  Message& m)
@@ -211,8 +209,6 @@ pbc_client::client_id(uint32_t client_id)
     if (error) return error;
     return true;
 }
-
-
 
 response<riak_result>
 pbc_client::store(object_ptr obj, const store_params& params)

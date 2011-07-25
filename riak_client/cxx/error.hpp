@@ -51,6 +51,7 @@ public:
         : error_(0, message) { }
     exception(const riak_error& error)
         : error_(error) { }
+    virtual ~exception() throw() { }
 public:
     const char* what() const throw() { return error_.message().c_str(); }
     int         error_code()  { return error_.code(); }

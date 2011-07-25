@@ -14,8 +14,8 @@
  limitations under the License.
  */
 
-#ifndef RIAKCXX_CLIENT_CONNECTION_HPP_
-#define RIAKCXX_CLIENT_CONNECTION_HPP_
+#ifndef RIAKCXX_CONNECTION_HPP_
+#define RIAKCXX_CONNECTION_HPP_
 
 #include "asio.hpp"
 #include <riak_client/cxx/riak_client_fwd.hpp>
@@ -28,14 +28,14 @@ namespace riak {
 class connection : private noncopyable  
 { 
 public:
-    connection(std::string host, std::string port);
+    connection(const std::string& host, const std::string& port);
     ~connection();
 public:
     /// Start the connection
     response<bool>     start();
     const std::string& host() const { return host_; }
     const std::string& port() const { return port_; }
-public:
+public: // io
     std::size_t write(io::const_buffer buf);
     std::size_t read(io::mutable_buffer buf);
 private:
@@ -44,7 +44,6 @@ private:
     io::io_service io_service_;
     io::tcp_socket socket_;
 };
-
 
 } // :: riak
 

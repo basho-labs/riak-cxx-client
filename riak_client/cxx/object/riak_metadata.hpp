@@ -1,6 +1,6 @@
 /**
   @file    riak_metadata.hpp
-  @brief   Riak Buckets and Bucket Properties */
+  @brief   Riak Object Metadata */
 /*  
  Copyright 2011 Basho Technologies, Inc.
 
@@ -157,7 +157,6 @@ riak_metadata::lastmod(uint32_t secs, uint32_t usecs)
 {
     last_mod_ = lastmod_time_t(secs, usecs);
 }
-
 
 } // ::riak
 

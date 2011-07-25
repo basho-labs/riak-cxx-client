@@ -27,23 +27,23 @@ class pbc_header
 {
 public:
     static const std::size_t HEADER_SIZE = 5;
-public:
+public: // constructors
     pbc_header() : size_(0), code_(0) {}
     pbc_header(msgcode_t c) : size_(0), code_(c) {}
     pbc_header(msgcode_t c, std::size_t s) : size_(s), code_(c) {}
-public:
+public: // accessors
     const msgcode_t code() const { return code_; }
     const uint32_t size() const { return size_; }
+public: // mutators
     void code(msgcode_t c) { code_ = c; }
     void size(uint32_t s) { size_ = s; }
-public:
+public: // serialization
     void deserialize(const char *buf, std::size_t len);
     void serialize(char* buf, std::size_t len) const;
-private:
+private: // intentionally copyable
     uint32_t  size_;
     msgcode_t code_;
 };
-
 
 }} // ::riak::pbc
 

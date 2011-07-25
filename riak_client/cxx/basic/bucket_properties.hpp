@@ -34,10 +34,6 @@ public:
         : allow_mult_(false), n_val_(-1) { }
 
     /// Return the value of the <dfn>allow_mult</dfn> bucket property.
-    ///
-    /// When set to true, fetch operations may return a #riak_sibling_object
-    /// with multiple sibling content entries.  These conflicts must be 
-    /// resolved before storing the object. 
     bool allow_mult() const
     {
         return allow_mult_;

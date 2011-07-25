@@ -28,9 +28,7 @@ class RIAKC_API client
 {
 public:
     client(const std::string& host, const std::string& port)
-        : basic_client_(riak::new_client(host, port)) 
-    {
-    }
+        : basic_client_(riak::new_client(host, port)) { }
 public:
     template <class T> 
     basic_bucket<T> bucket(const std::string& name) 
@@ -55,7 +53,6 @@ public:
 private:
     client_ptr basic_client_;
 };
-
 
 } // ::riak
 

@@ -9,7 +9,8 @@ libriak_client_la_SOURCES = src/cxx/pbc_client.cpp \
 	                    src/cxx/basic_client.cpp \
 	   		    src/cxx/riak_object.cpp \
 			    src/client.cpp \
-                            src/string_list.cpp
+                            src/string_list.cpp \
+			    src/string_map.cpp
 
 libriak_client_la_CXXFLAGS = -g3 -Ibuild/deps/include $(CFLAG_VISIBILITY) 
 libriak_client_la_LDFLAGS = -Lbuild/deps/lib -lprotobuf-lite \

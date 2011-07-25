@@ -64,6 +64,8 @@ struct null_pbc_type  {};
 template <msgcode_t code, class P=null_pbc_type>
 struct pbc_message : public P
 {
+    static const int message_code = code;
+
     std::size_t size() const { return P::ByteSize(); }
 
     bool serialize(pbc_storage& storage) const { 
@@ -78,6 +80,8 @@ struct pbc_message : public P
 template <msgcode_t code>
 struct pbc_message<code, null_pbc_type>
 {
+    static const int message_code = code;
+
     std::size_t size() const { return 0; }
 
     bool serialize(pbc_storage& storage) const { 
