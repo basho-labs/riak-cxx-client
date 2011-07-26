@@ -42,6 +42,7 @@ stamp-h2
 /Makefile
 /riak_client.pc
 /riak_cxx_simple_test
+/riak_cxx_test_server
 /riak_client/config.h
 /test/*.o
 

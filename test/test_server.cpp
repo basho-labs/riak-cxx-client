@@ -4,41 +4,17 @@
 #include "pbc_header.hpp"
 #include <riak_client/cxx/error.hpp>
 #include <map>
+
 using boost::asio::ip::tcp;
-
-const int max_length = 4096;
-
-typedef boost::shared_ptr<tcp::socket> socket_ptr;
-
 namespace r = riak;
 namespace pbc = riak::pbc;
 
-/*
-static const msgcode_t ERROR  = 0;
-static const msgcode_t GET_SERVER_INFO      = 7;
-static const msgcode_t GET_SERVER_INFO_RESP = 8;
-static const msgcode_t GET    = 9;
-static const msgcode_t GET_RESP      = 10;
-static const msgcode_t PUT    = 11;
-static const msgcode_t PUT_RESP      = 12;
-static const msgcode_t DEL    = 13;
-static const msgcode_t DEL_RESP      = 14;
-static const msgcode_t LIST_BUCKETS  = 15;
-static const msgcode_t LIST_BUCKETS_RESP    = 16;
-static const msgcode_t LIST_KEYS     = 17;
-static const msgcode_t LIST_KEYS_RESP= 18;
-static const msgcode_t GET_BUCKET    = 19;
-static const msgcode_t GET_BUCKET_RESP      = 20;
-static const msgcode_t SET_BUCKET    = 21;
-static const msgcode_t SET_BUCKET_RESP      = 22;
-static const msgcode_t MAPRED = 23;
-*/
+typedef boost::shared_ptr<tcp::socket> socket_ptr;
 
 struct test_object
 {
   RpbPutReq obj;
 };
-
 
 struct test_bucket 
 {
@@ -48,13 +24,11 @@ struct test_bucket
   std::map<std::string, test_object> objects;
 };
 
-
-
 class test_server 
 {
 public:
-  test_server(socket_ptr sock)
-    : sock_(sock), client_id_(0) {} 
+  test_server()
+    : sock_(), client_id_(0) {} 
 
   template <class Operation>
   void receive_request(Operation& op)
@@ -103,12 +77,13 @@ public:
 
   void maybe_throw()
   {
-    if (error_ && (error_ != boost::asio::error::eof))
+    if (error_)
       throw r::exception(r::riak_error(error_.value(), error_.message()));
   }
 
-  void start() 
+  void start(socket_ptr sock) 
   {
+    sock_ = sock;
     while (true)
     {
       recv_header();
@@ -129,14 +104,27 @@ public:
         break;
       case pbc::SET_BUCKET:
         handle_request<pbc::ops::set_bucket>();  
-        break;                  
+        break;  
+      case pbc::LIST_BUCKETS:
+        handle_request<pbc::ops::list_buckets>();
+        break;  
+      case pbc::LIST_KEYS:
+        handle_request<pbc::ops::list_keys>();              
+        break;
+      case pbc::PUT:
+        handle_request<pbc::ops::put>();
+        break;
+      case pbc::GET:
+        handle_request<pbc::ops::get>();
+        break;
+      case pbc::DEL:
+        handle_request<pbc::ops::del>();
+        break;
       default:
         break;
       }
     }
   }
-
-
 private:
   socket_ptr sock_;
   pbc::pbc_header header_;
@@ -157,13 +145,11 @@ void test_server::handle_operation<pbc::ops::set_client_id>(pbc::ops::set_client
   const char* client_id_str = op.request().client_id().c_str();
   uint32_t *id = (uint32_t *)client_id_str;
   client_id_ = *id;
-  printf("client id: %d\n", client_id_);
 }
 
 template <>
 void test_server::handle_operation<pbc::ops::get_client_id>(pbc::ops::get_client_id& op)
 {
-
   op.response().set_client_id(&client_id_, sizeof(client_id_));
 }
 
@@ -175,39 +161,106 @@ void test_server::handle_operation<pbc::ops::get_bucket>(pbc::ops::get_bucket& o
     op.response().mutable_props()->set_n_val((*it).second.n_val);
     op.response().mutable_props()->set_allow_mult((*it).second.allow_mult);
   }
-
+  else {
+    op.response().mutable_props()->set_n_val(3);
+    op.response().mutable_props()->set_allow_mult(false);
+  }
 }
 
 template <>
 void test_server::handle_operation<pbc::ops::set_bucket>(pbc::ops::set_bucket& op)
 {
   std::map<std::string, test_bucket>::iterator it = data_.find(op.request().bucket());
-  test_bucket* bucket = 0;
-  if (it != data_.end()) {    
-    bucket = &it->second;
-  }
-  else {
-    test_bucket b;
-    data_[op.request().bucket()] = b;
-    it = data_.find(op.request().bucket());
-    bucket = &it->second;
-  }
-  bucket->allow_mult = op.request().props().allow_mult();
-  bucket->n_val = op.request().props().n_val();
+  std::string bucket_name(op.request().bucket());
+  data_[bucket_name].n_val = op.request().props().n_val();
+  data_[bucket_name].allow_mult = op.request().props().allow_mult();
+}
 
+template <>
+void test_server::handle_operation<pbc::ops::list_buckets>(pbc::ops::list_buckets& op)
+{
+  for (std::map<std::string, test_bucket>::iterator it=data_.begin();
+       it != data_.end();
+       ++it) 
+    op.response().add_buckets(it->first);
+}
+
+template <>
+void test_server::handle_operation<pbc::ops::list_keys>(pbc::ops::list_keys& op)
+{
+  std::map<std::string, test_bucket>::iterator it = data_.find(op.request().bucket());
+  if (it != data_.end())  
+  {
+    for (std::map<std::string, test_object>::iterator it2=it->second.objects.begin();
+         it2 != it->second.objects.end();
+         ++it2)        
+      {
+        std::string key(it2->first);
+        op.response().add_keys(key);
+      }
+  }
+  op.response().set_done(true);
+}
+
+template <>
+void test_server::handle_operation<pbc::ops::put>(pbc::ops::put& op)
+{
+  test_object o;
+  o.obj.CheckTypeAndMergeFrom(op.request());
+  data_[op.request().bucket()].objects[op.request().key()] = o;
+  op.response().set_vclock("foo");
+  if (op.request().return_body())
+  {
+    RpbContent* c = op.response().add_content();
+    c->CheckTypeAndMergeFrom(op.request().content());
+  }
+}
+
+template<>
+void test_server::handle_operation<pbc::ops::get>(pbc::ops::get& op)
+{
+  std::map<std::string, test_bucket>::iterator it = data_.find(op.request().bucket());
+  if (it != data_.end())
+  {
+    std::map<std::string, test_object>::iterator it2 = it->second.objects.find(op.request().key());
+    if (it2 != it->second.objects.end())
+    {
+      RpbPutReq o = it2->second.obj;
+      op.response().set_vclock(o.vclock());
+      RpbContent* c = op.response().add_content();
+      c->CheckTypeAndMergeFrom(o.content());
+    }
+  }
+}
+
+template<>
+void test_server::handle_operation<pbc::ops::del>(pbc::ops::del& op)
+{
+  std::map<std::string, test_bucket>::iterator it = data_.find(op.request().bucket());
+  if (it != data_.end())
+  {
+    std::map<std::string, test_object>::iterator it2 = it->second.objects.find(op.request().key());
+    if (it2 != it->second.objects.end())
+    {
+      it->second.objects.erase(it2);
+    }
+  }
 }
 
 void server_loop(short port)
 {
   boost::asio::io_service io_service;
   tcp::acceptor a(io_service, tcp::endpoint(tcp::v4(), port));
+  test_server server;
   for (;;)
   {
     socket_ptr sock(new tcp::socket(io_service));
     a.accept(*sock);
-    test_server server(sock);
-    server.start();
-
+    try 
+    { 
+      server.start(sock);
+    }
+    catch (...) { }
   }
 }
 
@@ -217,17 +270,16 @@ int main(int argc, char* argv[])
   {
     if (argc != 2)
     {
-      std::cerr << "Usage: blocking_tcp_echo_server <port>\n";
+      std::cerr << "Usage: riak_cxx_test_server <port>\n";
       return 0;
     }
-    using namespace std; // For atoi.
-    server_loop(atoi(argv[1]));
+    while (true)
+    server_loop(std::atoi(argv[1]));
   }
   catch (std::exception& e)
   {
     std::cerr << "Exception: " << e.what() << "\n";
   }
-
   return 0;
 }
 
