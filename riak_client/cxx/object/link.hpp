@@ -20,6 +20,7 @@
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/object/riak_version.hpp>
 #include <string>
+#include <vector>
 
 namespace riak { 
 
@@ -42,7 +43,7 @@ private:
     std::string tag_;
 };
 
-
+typedef std::vector<link> link_vector;
 
 } // ::riak
 

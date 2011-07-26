@@ -18,6 +18,7 @@
 #define RIAKCXX_RIAK_CONTENT_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
+#include <riak_client/cxx/object/link.hpp>
 #include <riak_client/cxx/object/riak_metadata.hpp>
 #include <string>
 #include <vector>
@@ -34,13 +35,17 @@ public: // constructors
 public: // accessors
     const std::string&   value() const { return value_; }
     const riak_metadata& metadata() const { return metadata_; }
+    const link_vector&   links() const { return links_; }
 public:  // mutators
     void  value(const std::string& value) { value_ = value; }
     void  metadata(const riak_metadata& md) { metadata_ = md; }
+    void  links(const link_vector& links) { links_ = links; }
+public:
     void  debug_print() const;
 private: // intentionally copyable
     riak_metadata metadata_;
     std::string value_;
+    link_vector links_;
 };
 typedef std::vector<riak_content> content_vector;
 
