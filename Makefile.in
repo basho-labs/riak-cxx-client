@@ -288,6 +288,7 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/basic/bucket_properties.hpp \
 			 riak_client/cxx/basic/riak_result.hpp \
 			 riak_client/cxx/basic/response.hpp \
+			 riak_client/cxx/basic/server_info.hpp \
 			 riak_client/cxx/basic/store_params.hpp \
 			 riak_client/cxx/client.hpp \
 			 riak_client/cxx/client/client.hpp \

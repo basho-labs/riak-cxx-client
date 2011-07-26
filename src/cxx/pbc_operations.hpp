@@ -63,6 +63,9 @@ typedef pbc_message<GET_RESP, RpbGetResp> get_resp;
 typedef pbc_message<SET_CLIENT_ID, RpbSetClientIdReq> set_client_id_req;
 typedef pbc_message<SET_CLIENT_ID_RESP> set_client_id_resp;
 
+typedef pbc_message<GET_SERVER_INFO> get_server_info_req;
+typedef pbc_message<GET_SERVER_INFO_RESP, RpbGetServerInfoResp> get_server_info_resp;
+
 typedef pbc_message<LIST_BUCKETS> list_buckets_req;
 typedef pbc_message<LIST_BUCKETS_RESP, RpbListBucketsResp> list_buckets_resp;
 
@@ -77,6 +80,7 @@ typedef pbc_message<SET_BUCKET_RESP> set_bucket_resp;
 
 namespace ops {
     typedef operation<ping_req, ping_resp> ping;
+    typedef operation<get_server_info_req, get_server_info_resp> get_server_info;
     typedef operation<del_req, del_resp> del;
     typedef operation<put_req, put_resp> put;
     typedef operation<get_client_id_req, get_client_id_resp> get_client_id;

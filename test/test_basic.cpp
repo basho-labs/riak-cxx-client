@@ -34,6 +34,7 @@ bool test_pbc_client()
     assert(c->ping());
     c->client_id(42);
     assert(c->client_id() == 42);
+    riak::server_info info = c->get_server_info();
     return true;
 }
 
@@ -76,7 +77,7 @@ bool test_set_bucket()
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
     riak::bucket_properties properties;
     properties.allow_mult(true);
-    properties.n_val(669);
+    properties.n_val(3);
     return c->set_bucket(TEST_BUCKET, properties);
 }
 
@@ -86,7 +87,7 @@ bool test_fetch_bucket()
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
     riak::bucket_properties result = c->fetch_bucket(TEST_BUCKET);
     assert(result.allow_mult() == true);
-    assert(result.n_val() == 669);
+    assert(result.n_val() == 3);
     return true;
 
 }
@@ -147,7 +148,7 @@ bool test_client()
 
 int main(int argc, char *argv[]) {
        if (
-//           test_client() && 
+           //           test_client() && 
            test_pbc_client()  &&
            test_set_bucket() &&
            test_fetch_bucket() &&

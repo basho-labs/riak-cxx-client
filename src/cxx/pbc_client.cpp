@@ -135,6 +135,17 @@ pbc_client::ping()
     return true;
 }
 
+response<server_info> 
+pbc_client::get_server_info()
+{
+    ops::get_server_info operation;
+    riak_error error = execute(connection_, operation);
+    if (error) return error;
+    server_info s(operation.response().node(), 
+                  operation.response().server_version());
+    return s;
+}
+
 response<bool>  
 pbc_client::del(const string& bucket, const string& key, int dw)
 {
