@@ -14,15 +14,36 @@
  limitations under the License.
  */
 
-#ifndef RIAKCXX_OBJECT_TL_HPP_
-#define RIAKCXX_OBJECT_TL_HPP_
+#ifndef RIAKCXX_LINK_HPP_
+#define RIAKCXX_LINK_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
-#include <riak_client/cxx/object/link.hpp>
-#include <riak_client/cxx/object/riak_content.hpp>
-#include <riak_client/cxx/object/riak_metadata.hpp>
-#include <riak_client/cxx/object/riak_object.hpp>
 #include <riak_client/cxx/object/riak_version.hpp>
+#include <string>
 
+namespace riak { 
+
+class RIAKC_API link
+{
+public:
+    explicit link()
+        : bkey_(), tag_() { }
+    link(const std::string& bucket, const std::string& key)
+       : bkey_(bucket, key) { }
+    link(const std::string& bucket, const std::string& key, 
+        const std::string& tag)
+        : bkey_(bucket, key), tag_(tag) { }
+public:
+    const std::string& bucket() const { return bkey_.bucket(); }
+    const std::string& key() const { return bkey_.key(); }
+    const std::string& tag() const { return tag_; }
+private:
+    riak_bkey bkey_;
+    std::string tag_;
+};
+
+
+
+} // ::riak
 
 #endif // include guard

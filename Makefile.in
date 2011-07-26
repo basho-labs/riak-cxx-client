@@ -280,7 +280,26 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/client/client.hpp \
 			 riak_client/cxx/client/bucket.hpp \
 			 riak_client/cxx/client/resolver.hpp \
-			 riak_client/cxx/object.hpp
+			 riak_client/cxx/object.hpp \
+			 riak_client/cxx/object/link.hpp \
+			 riak_client/cxx/object/riak_content.hpp \
+		 	 riak_client/cxx/object/riak_metadata.hpp \
+			 riak_client/cxx/object/riak_object.hpp \
+			 riak_client/cxx/object/riak_version.hpp \
+			 riak_client/cxx/operations.hpp \
+			 riak_client/cxx/operations/fetch_object.hpp \
+			 riak_client/cxx/operations/delete_object.hpp \
+			 riak_client/cxx/operations/store_object.hpp \
+			 riak_client/cxx/util.hpp \
+			 riak_client/cxx/util/shared_ptr.hpp \
+			 riak_client/cxx/util/noncopyable.hpp \
+			 riak_client/client.h \
+			 riak_client/common.h \
+                         riak_client/config.h \
+			 riak_client/string_list.h \
+			 riak_client/string_map.h \
+			 riak_client/riak_object.h \
+			 riak_client/riak_metadata.h
 
 riak_client_libincludedir = $(libdir)/riak_client/include
 pkgconfigdir = $(libdir)/pkgconfig
@@ -975,24 +994,6 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-nobase_includeHEADERS \
 	uninstall-libLTLIBRARIES uninstall-nobase_includeHEADERS \
 	uninstall-pkgconfigDATA
 
-			 riak_client/cxx/object/riak_content.hpp \
-		 	 riak_client/cxx/object/riak_metadata.hpp \
-			 riak_client/cxx/object/riak_object.hpp \
-			 riak_client/cxx/object/riak_version.hpp \
-			 riak_client/cxx/operations.hpp \
-			 riak_client/cxx/operations/fetch_object.hpp \
-			 riak_client/cxx/operations/delete_object.hpp \
-			 riak_client/cxx/operations/store_object.hpp \
-			 riak_client/cxx/util.hpp \
-			 riak_client/cxx/util/shared_ptr.hpp \
-			 riak_client/cxx/util/noncopyable.hpp \
-			 riak_client/client.h \
-			 riak_client/common.h \
-                         riak_client/config.h \
-			 riak_client/string_list.h \
-			 riak_client/string_map.h \
-			 riak_client/riak_object.h \
-			 riak_client/riak_metadata.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

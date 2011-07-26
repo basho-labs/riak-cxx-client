@@ -33,7 +33,8 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/client/client.hpp \
 			 riak_client/cxx/client/bucket.hpp \
 			 riak_client/cxx/client/resolver.hpp \
-			 riak_client/cxx/object.hpp
+			 riak_client/cxx/object.hpp \
+			 riak_client/cxx/object/link.hpp \
 			 riak_client/cxx/object/riak_content.hpp \
 		 	 riak_client/cxx/object/riak_metadata.hpp \
 			 riak_client/cxx/object/riak_object.hpp \
