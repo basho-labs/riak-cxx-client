@@ -14,12 +14,33 @@
  limitations under the License.
  */
 
-#ifndef RIAKCXX_UTIL_HPP_
-#define RIAKCXX_UTIL_HPP_
+#ifndef RIAKCXX_URL_HPP_
+#define RIAKCXX_URL_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
-#include <riak_client/cxx/util/noncopyable.hpp>
-#include <riak_client/cxx/util/shared_ptr.hpp>
-#include <riak_client/cxx/util/url.hpp>
+#include <string>
+
+namespace riak { 
+
+class RIAKC_API url {
+public:
+    url(const std::string& url_str);
+public:
+    const std::string& protocol() const { return protocol_; }
+    const std::string& host() const { return host_; }
+    const std::string& port() const { return port_; }
+    const std::string& path() const { return path_; }
+    const std::string& query() const { return query_; }
+private:
+    void parse(const std::string& url_str);
+private:
+    std::string protocol_;
+    std::string host_;
+    std::string port_;
+    std::string path_;
+    std::string query_;
+};
+
+} // :: riak
 
 #endif // include guard
