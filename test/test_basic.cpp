@@ -34,6 +34,7 @@ bool test_pbc_client()
     assert(c->ping());
     c->client_id(42);
     assert(c->client_id() == 42);
+    riak::server_info info = c->get_server_info();
     return true;
 }
 
@@ -147,15 +148,15 @@ bool test_client()
 
 int main(int argc, char *argv[]) {
        if (
-           //test_client() && 
-           //test_pbc_client() &&
-           //test_set_bucket() &&
-           //test_fetch_bucket() &&
-           test_put() // &&
-           //test_fetch() &&
-           //test_list_buckets() &&
-           //test_list_keys()
-           //test_del()  
+           //           test_client() && 
+           test_pbc_client()  &&
+           test_set_bucket() &&
+           test_fetch_bucket() &&
+           test_put() &&
+           test_fetch() &&
+           test_list_buckets() &&
+           test_list_keys() &&
+           test_del()  
            )
            return 0;
     return 1;

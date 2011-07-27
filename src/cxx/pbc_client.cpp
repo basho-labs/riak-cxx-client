@@ -76,7 +76,7 @@ pbc_recv_header(connection_ptr c, riak_error& error)
     pbc_header header;
     char header_buf[5];
     c->read(io::buffer(&header_buf[0], 5));
-    header.deserialize(header_buf, 5);
+    header.deserialize(header_buf, pbc_header::HEADER_SIZE);
     if (header.code() == ERROR) 
     {
         pbc_storage storage(header.size());
@@ -119,7 +119,7 @@ pbc_client::pbc_client(const string& host, const string& port)
     : connection_(new connection(host, port))
 {
     connection_->start();
-    client_id(tss_client_id());
+    //client_id(tss_client_id());
 }
 
 pbc_client::~pbc_client()
@@ -133,6 +133,17 @@ pbc_client::ping()
     riak_error error = execute(connection_, operation);
     if (error) return error;
     return true;
+}
+
+response<server_info> 
+pbc_client::get_server_info()
+{
+    ops::get_server_info operation;
+    riak_error error = execute(connection_, operation);
+    if (error) return error;
+    server_info s(operation.response().node(), 
+                  operation.response().server_version());
+    return s;
 }
 
 response<bool>  
@@ -246,12 +257,12 @@ pbc_client::list_keys(const string& bucket)
     operation.request().set_bucket(bucket);
     riak_error error = execute(connection_, operation);
     if (error) return error;
-    while (!operation.response().done()) 
-    {
+    do {
         for (int i=0;i<operation.response().keys_size();++i) 
             result.push_back(operation.response().keys(i));
+        if (operation.response().done()) break;
         pbc_recv(connection_, operation.response());
-    }
+     } while (true);
     return result;
 }
 

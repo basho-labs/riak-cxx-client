@@ -14,16 +14,29 @@
  limitations under the License.
  */
 
-#ifndef RIAKCXX_BASIC_HPP_
-#define RIAKCXX_BASIC_HPP_
+#ifndef RIAKCXX_SERVER_INFO_HPP_
+#define RIAKCXX_SERVER_INFO_HPP_
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
-#include <riak_client/cxx/basic/basic_client.hpp>
-#include <riak_client/cxx/basic/bucket_properties.hpp>
-#include <riak_client/cxx/basic/riak_result.hpp>
-#include <riak_client/cxx/basic/quorum.hpp>
-#include <riak_client/cxx/basic/response.hpp>
-#include <riak_client/cxx/basic/server_info.hpp>
-#include <riak_client/cxx/basic/store_params.hpp>
+
+namespace riak { 
+
+class RIAKC_API server_info
+{
+public: // constructors
+    explicit server_info() { }
+    server_info(const std::string& node, const std::string& version)
+        : node_(node), version_(version) { }
+public:
+    const std::string& node() const { return node_; }
+    const std::string& version() const { return version_; }
+public:
+    std::string node_;
+    std::string version_;
+};
+
+} // ::riak
 
 #endif // include guard
+
+

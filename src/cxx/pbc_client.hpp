@@ -31,7 +31,7 @@ public:
     virtual ~pbc_client();
 public:
     response<bool> ping();
-    
+    response<server_info> get_server_info();
     response<bool> del(const std::string& bucket, const std::string& key, 
                        int dw);
     response<bool> set_bucket(const std::string& bucket, 

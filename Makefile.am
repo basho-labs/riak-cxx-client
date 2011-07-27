@@ -28,6 +28,7 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/basic/bucket_properties.hpp \
 			 riak_client/cxx/basic/riak_result.hpp \
 			 riak_client/cxx/basic/response.hpp \
+			 riak_client/cxx/basic/server_info.hpp \
 			 riak_client/cxx/basic/store_params.hpp \
 			 riak_client/cxx/client.hpp \
 			 riak_client/cxx/client/client.hpp \
@@ -59,12 +60,16 @@ riak_client_libincludedir = $(libdir)/riak_client/include
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = riak_client.pc
 
-check_PROGRAMS = riak_cxx_simple_test 
+check_PROGRAMS = riak_cxx_simple_test riak_cxx_test_server
 TESTS = $(check_PROGRAMS)
 
 riak_cxx_simple_test_SOURCES = test/test_basic.cpp
 riak_cxx_simple_test_CXXFLAGS = $(libriak_client_la_CXXFLAGS)
 riak_cxx_simple_test_LDFLAGS = -lriak_client
+
+riak_cxx_test_server_SOURCES = test/test_server.cpp src/cxx/pbc_header.cpp src/cxx/pbc_message.cpp src/cxx/riakclient.pb.cc
+riak_cxx_test_server_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -Isrc/cxx
+riak_cxx_test_server_LDFLAGS =  $(libriak_client_la_LDFLAGS) -lriak_client 
 
 CLEANFILES = $(check_PROGRAMS)
 SUBDIRS = deps
