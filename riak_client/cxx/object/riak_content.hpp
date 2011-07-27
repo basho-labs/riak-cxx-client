@@ -40,7 +40,7 @@ public:  // mutators
     void  value(const std::string& value) { value_ = value; }
     void  metadata(const riak_metadata& md) { metadata_ = md; }
     void  links(const link_vector& links) { links_ = links; }
-public:
+ public:
     void  debug_print() const;
 private: // intentionally copyable
     riak_metadata metadata_;

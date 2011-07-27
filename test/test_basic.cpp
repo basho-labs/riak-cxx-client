@@ -112,7 +112,12 @@ bool test_put()
     riak::riak_result fetch_result = c->fetch(TEST_BUCKET, TEST_KEY, 2, 2);
     riak::object_ptr o;
     if (fetch_result.not_found()) 
+    {        
         o = riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY);
+        riak::link_vector v = o->update_content().links();
+        v.push_back(riak::link("foo", "bar", "baz"));
+        o->update_content().links(v);
+    }
     else 
         o = fetch_result.choose_sibling(0);
     o->debug_print();
@@ -155,8 +160,8 @@ int main(int argc, char *argv[]) {
            test_put() &&
            test_fetch() &&
            test_list_buckets() &&
-           test_list_keys() &&
-           test_del()  
+           test_list_keys() //&&
+           //test_del()  
            )
            return 0;
     return 1;

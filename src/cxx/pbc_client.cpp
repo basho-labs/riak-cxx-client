@@ -46,6 +46,15 @@ void encode_object(object_ptr obj, ops::put::request_type& req)
         entry->set_key((*it).first);
         entry->set_value((*it).second);
     }
+    for (link_vector::const_iterator it = obj->update_content().links().begin();
+         it != obj->update_content().links().end();
+         ++it)
+    {
+        RpbLink* l = c->add_links();
+        l->set_bucket((*it).bucket());
+        l->set_key((*it).key());
+        l->set_tag((*it).tag());
+    }
 }
 
 template <class T>
@@ -66,7 +75,15 @@ void decode_contents(const T& response, content_vector& contents)
         md.encoding(content.content_encoding());
         md.vtag(content.vtag());
         md.lastmod(content.last_mod(), content.last_mod_usecs());
-        contents.push_back(riak_content(md, content.value()));
+        link_vector links;
+        for (int j=0;j<content.links_size();++j)
+        {
+            RpbLink pb_link = content.links(j);
+            links.push_back(link(pb_link.bucket(), pb_link.key(), pb_link.tag()));
+        }
+        riak_content c(md, content.value());
+        c.links(links);
+        contents.push_back(c);
     }
 }
 
