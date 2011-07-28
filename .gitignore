@@ -40,6 +40,7 @@ stamp-h2
 /libtool
 /libriak_client.la
 /Makefile
+/riakc
 /riak_client.pc
 /riak_cxx_simple_test
 /riak_cxx_test_server

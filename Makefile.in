@@ -16,6 +16,7 @@
 
 
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -35,6 +36,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+bin_PROGRAMS = riakc$(EXEEXT)
 check_PROGRAMS = riak_cxx_simple_test$(EXEEXT) \
 	riak_cxx_test_server$(EXEEXT)
 subdir = .
@@ -63,8 +65,8 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(includedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libriak_client_la_LIBADD =
@@ -77,6 +79,7 @@ am_libriak_client_la_OBJECTS =  \
 	src/cxx/libriak_client_la-riakclient.pb.lo \
 	src/cxx/libriak_client_la-basic_client.lo \
 	src/cxx/libriak_client_la-riak_object.lo \
+	src/cxx/libriak_client_la-url.lo \
 	src/libriak_client_la-client.lo \
 	src/libriak_client_la-string_list.lo \
 	src/libriak_client_la-string_map.lo
@@ -85,6 +88,8 @@ libriak_client_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(libriak_client_la_CXXFLAGS) $(CXXFLAGS) \
 	$(libriak_client_la_LDFLAGS) $(LDFLAGS) -o $@
+binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+PROGRAMS = $(bin_PROGRAMS)
 am_riak_cxx_simple_test_OBJECTS =  \
 	test/riak_cxx_simple_test-test_basic.$(OBJEXT)
 riak_cxx_simple_test_OBJECTS = $(am_riak_cxx_simple_test_OBJECTS)
@@ -104,6 +109,12 @@ riak_cxx_test_server_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) \
 	$(riak_cxx_test_server_LDFLAGS) $(LDFLAGS) -o $@
+am_riakc_OBJECTS = src/riakc/riakc-riakc.$(OBJEXT)
+riakc_OBJECTS = $(am_riakc_OBJECTS)
+riakc_LDADD = $(LDADD)
+riakc_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CXXLD) $(riakc_CXXFLAGS) $(CXXFLAGS) \
+	$(riakc_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/riak_client@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -117,7 +128,7 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libriak_client_la_SOURCES) $(riak_cxx_simple_test_SOURCES) \
-	$(riak_cxx_test_server_SOURCES)
+	$(riak_cxx_test_server_SOURCES) $(riakc_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -268,6 +279,7 @@ libriak_client_la_SOURCES = src/cxx/pbc_client.cpp \
 			    src/cxx/riakclient.pb.cc \
 	                    src/cxx/basic_client.cpp \
 	   		    src/cxx/riak_object.cpp \
+			    src/cxx/url.cpp \
 			    src/client.cpp \
                             src/string_list.cpp \
 			    src/string_map.cpp
@@ -307,6 +319,7 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/util.hpp \
 			 riak_client/cxx/util/shared_ptr.hpp \
 			 riak_client/cxx/util/noncopyable.hpp \
+			 riak_client/cxx/util/url.hpp \
 			 riak_client/client.h \
 			 riak_client/common.h \
                          riak_client/config.h \
@@ -316,6 +329,9 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/riak_metadata.h
 
 riak_client_libincludedir = $(libdir)/riak_client/include
+riakc_SOURCES = src/riakc/riakc.cpp
+riakc_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -I/usr/local/Cellar/readline/6.2.1/include
+riakc_LDFLAGS = -lriak_client -L/usr/local/Cellar/readline/6.2.1/lib -lreadline
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = riak_client.pc
 TESTS = $(check_PROGRAMS)
@@ -431,6 +447,8 @@ src/cxx/libriak_client_la-basic_client.lo: src/cxx/$(am__dirstamp) \
 	src/cxx/$(DEPDIR)/$(am__dirstamp)
 src/cxx/libriak_client_la-riak_object.lo: src/cxx/$(am__dirstamp) \
 	src/cxx/$(DEPDIR)/$(am__dirstamp)
+src/cxx/libriak_client_la-url.lo: src/cxx/$(am__dirstamp) \
+	src/cxx/$(DEPDIR)/$(am__dirstamp)
 src/$(am__dirstamp):
 	@$(MKDIR_P) src
 	@: > src/$(am__dirstamp)
@@ -445,6 +463,34 @@ src/libriak_client_la-string_map.lo: src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 libriak_client.la: $(libriak_client_la_OBJECTS) $(libriak_client_la_DEPENDENCIES) 
 	$(libriak_client_la_LINK) -rpath $(libdir) $(libriak_client_la_OBJECTS) $(libriak_client_la_LIBADD) $(LIBS)
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(bindir)/$$f" || exit 1; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
+	done
+
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; for p in $$list; do \
@@ -474,6 +520,17 @@ src/cxx/riak_cxx_test_server-riakclient.pb.$(OBJEXT):  \
 riak_cxx_test_server$(EXEEXT): $(riak_cxx_test_server_OBJECTS) $(riak_cxx_test_server_DEPENDENCIES) 
 	@rm -f riak_cxx_test_server$(EXEEXT)
 	$(riak_cxx_test_server_LINK) $(riak_cxx_test_server_OBJECTS) $(riak_cxx_test_server_LDADD) $(LIBS)
+src/riakc/$(am__dirstamp):
+	@$(MKDIR_P) src/riakc
+	@: > src/riakc/$(am__dirstamp)
+src/riakc/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/riakc/$(DEPDIR)
+	@: > src/riakc/$(DEPDIR)/$(am__dirstamp)
+src/riakc/riakc-riakc.$(OBJEXT): src/riakc/$(am__dirstamp) \
+	src/riakc/$(DEPDIR)/$(am__dirstamp)
+riakc$(EXEEXT): $(riakc_OBJECTS) $(riakc_DEPENDENCIES) 
+	@rm -f riakc$(EXEEXT)
+	$(riakc_LINK) $(riakc_OBJECTS) $(riakc_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -491,6 +548,8 @@ mostlyclean-compile:
 	-rm -f src/cxx/libriak_client_la-riak_object.lo
 	-rm -f src/cxx/libriak_client_la-riakclient.pb.$(OBJEXT)
 	-rm -f src/cxx/libriak_client_la-riakclient.pb.lo
+	-rm -f src/cxx/libriak_client_la-url.$(OBJEXT)
+	-rm -f src/cxx/libriak_client_la-url.lo
 	-rm -f src/cxx/riak_cxx_test_server-pbc_header.$(OBJEXT)
 	-rm -f src/cxx/riak_cxx_test_server-pbc_message.$(OBJEXT)
 	-rm -f src/cxx/riak_cxx_test_server-riakclient.pb.$(OBJEXT)
@@ -500,6 +559,7 @@ mostlyclean-compile:
 	-rm -f src/libriak_client_la-string_list.lo
 	-rm -f src/libriak_client_la-string_map.$(OBJEXT)
 	-rm -f src/libriak_client_la-string_map.lo
+	-rm -f src/riakc/riakc-riakc.$(OBJEXT)
 	-rm -f test/riak_cxx_simple_test-test_basic.$(OBJEXT)
 	-rm -f test/riak_cxx_test_server-test_server.$(OBJEXT)
 
@@ -516,9 +576,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-pbc_message.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-riak_object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-riakclient.pb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-url.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/riakc/$(DEPDIR)/riakc-riakc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@test/$(DEPDIR)/riak_cxx_test_server-test_server.Po@am__quote@
 
@@ -594,6 +656,13 @@ src/cxx/libriak_client_la-riak_object.lo: src/cxx/riak_object.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/riak_object.cpp' object='src/cxx/libriak_client_la-riak_object.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libriak_client_la_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/libriak_client_la-riak_object.lo `test -f 'src/cxx/riak_object.cpp' || echo '$(srcdir)/'`src/cxx/riak_object.cpp
+
+src/cxx/libriak_client_la-url.lo: src/cxx/url.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libriak_client_la_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/libriak_client_la-url.lo -MD -MP -MF src/cxx/$(DEPDIR)/libriak_client_la-url.Tpo -c -o src/cxx/libriak_client_la-url.lo `test -f 'src/cxx/url.cpp' || echo '$(srcdir)/'`src/cxx/url.cpp
+@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/libriak_client_la-url.Tpo src/cxx/$(DEPDIR)/libriak_client_la-url.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/url.cpp' object='src/cxx/libriak_client_la-url.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libriak_client_la_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/libriak_client_la-url.lo `test -f 'src/cxx/url.cpp' || echo '$(srcdir)/'`src/cxx/url.cpp
 
 src/libriak_client_la-client.lo: src/client.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libriak_client_la_CXXFLAGS) $(CXXFLAGS) -MT src/libriak_client_la-client.lo -MD -MP -MF src/$(DEPDIR)/libriak_client_la-client.Tpo -c -o src/libriak_client_la-client.lo `test -f 'src/client.cpp' || echo '$(srcdir)/'`src/client.cpp
@@ -685,6 +754,20 @@ src/cxx/riak_cxx_test_server-riakclient.pb.obj: src/cxx/riakclient.pb.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/riakclient.pb.cc' object='src/cxx/riak_cxx_test_server-riakclient.pb.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-riakclient.pb.obj `if test -f 'src/cxx/riakclient.pb.cc'; then $(CYGPATH_W) 'src/cxx/riakclient.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/cxx/riakclient.pb.cc'; fi`
+
+src/riakc/riakc-riakc.o: src/riakc/riakc.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riakc_CXXFLAGS) $(CXXFLAGS) -MT src/riakc/riakc-riakc.o -MD -MP -MF src/riakc/$(DEPDIR)/riakc-riakc.Tpo -c -o src/riakc/riakc-riakc.o `test -f 'src/riakc/riakc.cpp' || echo '$(srcdir)/'`src/riakc/riakc.cpp
+@am__fastdepCXX_TRUE@	mv -f src/riakc/$(DEPDIR)/riakc-riakc.Tpo src/riakc/$(DEPDIR)/riakc-riakc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/riakc/riakc.cpp' object='src/riakc/riakc-riakc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riakc_CXXFLAGS) $(CXXFLAGS) -c -o src/riakc/riakc-riakc.o `test -f 'src/riakc/riakc.cpp' || echo '$(srcdir)/'`src/riakc/riakc.cpp
+
+src/riakc/riakc-riakc.obj: src/riakc/riakc.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riakc_CXXFLAGS) $(CXXFLAGS) -MT src/riakc/riakc-riakc.obj -MD -MP -MF src/riakc/$(DEPDIR)/riakc-riakc.Tpo -c -o src/riakc/riakc-riakc.obj `if test -f 'src/riakc/riakc.cpp'; then $(CYGPATH_W) 'src/riakc/riakc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/riakc/riakc.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f src/riakc/$(DEPDIR)/riakc-riakc.Tpo src/riakc/$(DEPDIR)/riakc-riakc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/riakc/riakc.cpp' object='src/riakc/riakc-riakc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riakc_CXXFLAGS) $(CXXFLAGS) -c -o src/riakc/riakc-riakc.obj `if test -f 'src/riakc/riakc.cpp'; then $(CYGPATH_W) 'src/riakc/riakc.cpp'; else $(CYGPATH_W) '$(srcdir)/src/riakc/riakc.cpp'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -964,10 +1047,12 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
+install-binPROGRAMS: install-libLTLIBRARIES
+
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -995,6 +1080,8 @@ distclean-generic:
 	-rm -f src/$(am__dirstamp)
 	-rm -f src/cxx/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/cxx/$(am__dirstamp)
+	-rm -f src/riakc/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/riakc/$(am__dirstamp)
 	-rm -f test/$(DEPDIR)/$(am__dirstamp)
 	-rm -f test/$(am__dirstamp)
 
@@ -1003,12 +1090,12 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool mostlyclean-am
+clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf src/$(DEPDIR) src/cxx/$(DEPDIR) test/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/cxx/$(DEPDIR) src/riakc/$(DEPDIR) test/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-tags
@@ -1027,7 +1114,7 @@ install-data-am: install-nobase_includeHEADERS install-pkgconfigDATA
 
 install-dvi: install-dvi-recursive
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
 
 install-html: install-html-recursive
 
@@ -1044,7 +1131,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf src/$(DEPDIR) src/cxx/$(DEPDIR) test/$(DEPDIR)
+	-rm -rf src/$(DEPDIR) src/cxx/$(DEPDIR) src/riakc/$(DEPDIR) test/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1061,30 +1148,30 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES uninstall-nobase_includeHEADERS \
-	uninstall-pkgconfigDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-nobase_includeHEADERS uninstall-pkgconfigDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) install-am \
 	install-strip
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am am--refresh check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool ctags ctags-recursive distclean \
-	distclean-compile distclean-generic distclean-hdr \
+	clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool ctags ctags-recursive \
+	distclean distclean-compile distclean-generic distclean-hdr \
 	distclean-libtool distclean-tags dvi dvi-am html html-am info \
-	info-am install install-am install-data install-data-am \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man \
+	info-am install install-am install-binPROGRAMS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-libLTLIBRARIES install-man \
 	install-nobase_includeHEADERS install-pdf install-pdf-am \
 	install-pkgconfigDATA install-ps install-ps-am install-strip \
 	installcheck installcheck-am installdirs installdirs-am \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
-	uninstall-libLTLIBRARIES uninstall-nobase_includeHEADERS \
-	uninstall-pkgconfigDATA
+	uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-nobase_includeHEADERS uninstall-pkgconfigDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -8,6 +8,7 @@ libriak_client_la_SOURCES = src/cxx/pbc_client.cpp \
 			    src/cxx/riakclient.pb.cc \
 	                    src/cxx/basic_client.cpp \
 	   		    src/cxx/riak_object.cpp \
+			    src/cxx/url.cpp \
 			    src/client.cpp \
                             src/string_list.cpp \
 			    src/string_map.cpp
@@ -47,6 +48,7 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/cxx/util.hpp \
 			 riak_client/cxx/util/shared_ptr.hpp \
 			 riak_client/cxx/util/noncopyable.hpp \
+			 riak_client/cxx/util/url.hpp \
 			 riak_client/client.h \
 			 riak_client/common.h \
                          riak_client/config.h \
@@ -56,6 +58,11 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 			 riak_client/riak_metadata.h
 
 riak_client_libincludedir = $(libdir)/riak_client/include
+
+bin_PROGRAMS = riakc
+riakc_SOURCES = src/riakc/riakc.cpp
+riakc_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -I/usr/local/Cellar/readline/6.2.1/include
+riakc_LDFLAGS = -lriak_client -L/usr/local/Cellar/readline/6.2.1/lib -lreadline
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = riak_client.pc
