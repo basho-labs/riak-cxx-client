@@ -18,6 +18,7 @@ stamp-h2
 /deps/protobuf-2.4.1/src/*.la
 /src/cxx/*.o
 /src/cxx/*.lo
+/src/riakc/*.o
 /src/*.o
 /src/*.lo
 /config.h

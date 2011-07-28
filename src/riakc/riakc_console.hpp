@@ -56,9 +56,6 @@ private:
 };
 
 
-
-
-
 class riak_console
 {
 public:
