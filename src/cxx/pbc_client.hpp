@@ -38,9 +38,9 @@ public:
                               const bucket_properties& properties);
     response<bool> client_id(uint32_t client_id);
     response<uint32_t>      client_id();
-    response<riak_result>  fetch(const std::string& bucket, 
-                                 const std::string& key, int r, int pr);
-    response<riak_result>  store(object_ptr object, const store_params& params);
+    response<result_ptr>  fetch(const std::string& bucket, 
+                                 const std::string& key, int r);
+    response<result_ptr>  store(object_ptr object, const store_params& params);
     response<string_vector> list_buckets();
     response<string_vector> list_keys(const std::string& bucket);
     response<bucket_properties> fetch_bucket(const std::string& bucket);

@@ -1,0 +1,179 @@
+    string::const_iterator port_i = find(prot_i, url_s.end(), ':');
+    if (port_i != url_s.end()) 
+    {
+        port_.reserve(distance(prot_i, path_i);
+        transform(path_i, port_i, back_inserter(port_),
+                  ptr_fun<int,int>(tolower));
+        advance(
+    }
+
+static int verbose_flag;
+
+static struct option long_options[] =
+{
+/* These options set a flag. */
+{"verbose", no_argument,       &verbose_flag, 1},
+{"brief",   no_argument,       &verbose_flag, 0},
+/* These options don't set a flag.
+   We distinguish them by their indices. */
+{"add",     no_argument,       0, 'a'},
+{"append",  no_argument,       0, 'b'},
+{"delete",  required_argument, 0, 'd'},
+{"create",  required_argument, 0, 'c'},
+{"file",    required_argument, 0, 'f'},
+{0, 0, 0, 0}
+};
+
+
+/*
+void cb_command(riak_console& client, const riak::string_vector& tokens)
+{
+
+}
+
+void del_command(riak_console& client, const riak::string_vector& tokens)
+{
+}
+
+void get_command(riak_console& client, const riak::string_vector& tokens)
+{
+    if (tokens.empty()) return;
+    if (client.context_.bucket.empty()) return;
+    if (tokens.size() != 2) return;
+    std::string key(tokens[1]);
+    riak::riak_result result(
+      client.client_->fetch(client.context_.bucket, key, 1, 1));
+    cout << endl;
+    if (result.not_found())
+        cout << "not found." << endl;
+    else 
+    {
+        cout << endl;
+        result.choose_sibling(0)->debug_print();
+        cout << endl;
+    }
+}
+
+void put_command(riak_console& client, const riak::string_vector& tokens)
+{
+    if (tokens.empty()) return;
+    if (client.context_.bucket.empty()) return;
+    if (tokens.size() != 3) return;
+    string arg(tokens[1]);
+    string key(tokens[2]);
+    string value;
+    ifstream input_file(arg.c_str(),ios::binary);
+    if (!input_file.is_open())
+        value = arg;
+    else 
+    {
+        stringstream buffer;
+        buffer << input_file.rdbuf();
+        input_file.close();
+        value = buffer.str();
+    }
+    riak::riak_result result(
+      client.client_->fetch(client.context_.bucket, key, 1, 1));
+    riak::object_ptr o;
+    if (result.not_found())
+    {
+        o = riak::make_object(client.context_.bucket, key, value);
+    }
+    else 
+    {
+        o = result.choose_sibling(0);
+        o->update_value(value);
+    }
+    riak::store_params sp;
+    sp.w(1).dw(1);
+    riak::response<riak::riak_result> r(client.client_->store(o, sp));
+    if (r.error())
+        cout << "ERROR(" << r.error().code() << "): " << r.error().message() << endl;
+    else {
+        cout << endl << "<" << o->bucket() << "/" << o->key();
+        cout << "> stored successfully." << endl;
+    }
+}
+
+    
+void list_command(riak_console& client, const riak::string_vector& tokens)
+{
+    if (client.context_.bucket.empty())
+    {
+        riak::string_vector buckets = client.client_->list_buckets();
+        cout << endl;
+        for (riak::string_vector::const_iterator it=buckets.begin();
+             it != buckets.end();
+             ++it)
+        {
+            cout << *it << endl;
+        }
+        cout << "---------------" << endl;
+        cout << buckets.size() << " buckets found" << endl;
+    }
+    else 
+    {
+        riak::string_vector keys = client.client_->list_keys(client.context_.bucket);
+        for (riak::string_vector::const_iterator it=keys.begin();
+             it != keys.end();
+             ++it)
+        {
+            cout << *it << endl;
+        }
+        cout << "---------------" << endl;
+        cout << keys.size() << " keys found" << endl;        
+    }
+}
+
+void info_command(riak_console& client, const riak::string_vector& tokens)
+{
+    print_server_info(client.client_);
+}
+int rl_main(const std::string& urlstr)
+{
+    cout << "riakc version 1.0" << endl;
+    cout << "Type 'help' for more information, Ctrl+D to exit." << endl;
+    riak_console client(urlstr);
+    client.run();
+    std::string prompt = urlstr + "> ";
+    swift::SReadline reader("/tmp/rlhist");
+    command_list commands;
+    help_command help(commands); 
+    commands.push_back(command("help", boost::bind(&help_command::operator(), &help, _1, _2)));
+    commands.push_back(command("cb",   cb_command));
+    commands.push_back(command("get",  get_command));
+    commands.push_back(command("put %file",  put_command));
+    commands.push_back(command("list", list_command));
+    commands.push_back(command("info", info_command));
+    reader.RegisterCompletions(commands);
+    bool eoi = false;
+    vector<string> tokens;
+    command_list::iterator found(commands.end());
+    for (;;)
+    {
+        prompt = urlstr + "/" + client.bucket_;
+        if (!client.key_.empty()) 
+            prompt += "/" + client.key_;
+        prompt += "> ";
+        reader.GetLine(prompt, tokens, eoi);
+        if (eoi) 
+        {
+            cout << "exiting." << endl;
+            break;
+        }
+        if (!tokens.empty())
+        {
+            if (*tokens.begin() == "exit") break;
+            found = find_if(commands.begin(), commands.end(), lookup(tokens));
+            if (found != commands.end())
+            {
+                if (found->second != 0) found->second(client, tokens, client.current_context());
+            }
+            else
+                cout << "Unknown command.  Type 'help' for a list of commands" << endl;
+        }
+    }
+    return 0;
+}
+
+*/

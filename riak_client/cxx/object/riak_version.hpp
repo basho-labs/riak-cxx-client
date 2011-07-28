@@ -27,7 +27,6 @@ namespace riak {
 class RIAKC_API riak_bkey
 {
 public: // constructors
-    explicit riak_bkey() { }
     riak_bkey(const std::string& bucket, const std::string& key)
         : bucket_(bucket), key_(key) { }
 public: // accessors
@@ -41,9 +40,8 @@ private: // intentionally copyable
 class RIAKC_API riak_version
 {
  public: // constructors
-    explicit riak_version() { }
-    explicit riak_version(const riak_bkey& bkey)
-        : bkey_(bkey) { }
+    riak_version(const riak_bkey& bkey)
+        : bkey_(bkey) { } 
     riak_version(const riak_bkey& bkey, const std::string& vclock)
         : bkey_(bkey), vclock_(vclock) { }
 public: // accessors

@@ -21,7 +21,7 @@ void print_server_info(riak::client_ptr client);
 static std::string DEFAULT_URL = "pbc://127.0.0.1:8087";
 static riak::url*  URL;
 
-int parse_path_part(const std::string& path, std::string& part, int start=0);
+std::size_t parse_path_part(const std::string& path, std::string& part, std::size_t start=0);
 riak::riak_bkey parse_path();
 riak::client_ptr make_client(string url_str)
 {
@@ -42,15 +42,15 @@ void get_command(riak_console& client, const riak::string_vector& tokens)
     if (client.context().bucket.empty()) return;
     if (tokens.size() != 2) return;
     std::string key(tokens[1]);
-    riak::riak_result result(
-      client.client()->fetch(client.context().bucket, key, 1, 1));
+    riak::result_ptr result(
+      client.client()->fetch(client.context().bucket, key, 1));
     cout << endl;
-    if (result.not_found())
+    if (result->not_found())
         cout << "not found." << endl;
     else 
     {
         cout << endl;
-        result.choose_sibling(0)->debug_print();
+        result->choose_sibling(0)->debug_print();
         cout << endl;
     }
 }
@@ -73,21 +73,21 @@ void put_command(riak_console& client, const riak::string_vector& tokens)
         input_file.close();
         value = buffer.str();
     }
-    riak::riak_result result(
-      client.client()->fetch(client.context().bucket, key, 1, 1));
+    riak::result_ptr result(
+                            client.client()->fetch(client.context().bucket, key, 1));
     riak::object_ptr o;
-    if (result.not_found())
+    if (result->not_found())
     {
         o = riak::make_object(client.context().bucket, key, value);
     }
     else 
     {
-        o = result.choose_sibling(0);
+        o = result->choose_sibling(0);
         o->update_value(value);
     }
     riak::store_params sp;
     sp.w(1).dw(1);
-    riak::response<riak::riak_result> r(client.client()->store(o, sp));
+    riak::response<riak::result_ptr> r(client.client()->store(o, sp));
     if (r.error())
         cout << "ERROR(" << r.error().code() << "): " << r.error().message() << endl;
     else {
@@ -137,12 +137,12 @@ void info_command(riak_console& client, const riak::string_vector& tokens)
     print_server_info(client.client());
 }
 
-int parse_path_part(const std::string& path, std::string& part, int start)
+std::size_t parse_path_part(const std::string& path, std::string& part, std::size_t start)
 {
     if (path.empty()) return start;
     if (path[start] == '/')
         start += 1;
-    for (start;start<path.size();++start) {
+    for (;start<path.size();++start) {
         if (path[start] == '/') break;
         part.push_back(path[start]);
     }
@@ -171,13 +171,13 @@ void print_server_info(riak::client_ptr client)
 void do_get(riak::client_ptr client)
 {
     riak::riak_bkey bkey(parse_path());
-    riak::riak_result result = client->fetch(bkey.bucket(), bkey.key(), 1, 1);
-    if (result.not_found())
+    riak::result_ptr result(client->fetch(bkey.bucket(), bkey.key(), 1));
+    if (result->not_found())
     {
         cout << "ERROR:  " << URL->path() << " not found." << endl;
         return;
     }
-    riak::object_ptr object = result.choose_sibling(0);
+    riak::object_ptr object = result->choose_sibling(0);
     cout << object->value() << std::endl;
 }
 
@@ -191,7 +191,6 @@ void print_help()
 int main(int argc, char *argv[]) 
 {
     string command;
-    int url_idx = 2;
     string urlstr = DEFAULT_URL;
     if (argc == 1) 
     {

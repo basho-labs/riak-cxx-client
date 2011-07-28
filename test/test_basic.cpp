@@ -95,9 +95,9 @@ bool test_fetch_bucket()
 bool test_fetch()
 {
     TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
-    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
-    riak::riak_result fr = c->fetch(TEST_BUCKET, TEST_KEY, 3, 3);
-    assert(fr.contents()[0].value() == TEST_KEY);
+    riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
+    riak::result_ptr fr(c->fetch(TEST_BUCKET, TEST_KEY, 3));
+    assert(fr->contents()[0].value() == TEST_KEY);
     return true;
 }
 
@@ -109,9 +109,9 @@ bool test_put()
     c->client_id(42);
     riak::store_params sp;
     sp.w(3).dw(3).return_body(true);
-    riak::riak_result fetch_result = c->fetch(TEST_BUCKET, TEST_KEY, 2, 2);
+    riak::result_ptr fetch_result = c->fetch(TEST_BUCKET, TEST_KEY, 2);
     riak::object_ptr o;
-    if (fetch_result.not_found()) 
+    if (fetch_result->not_found()) 
     {        
         o = riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY);
         riak::link_vector v = o->update_content().links();
@@ -119,14 +119,14 @@ bool test_put()
         o->update_content().links(v);
     }
     else 
-        o = fetch_result.choose_sibling(0);
+        o = fetch_result->choose_sibling(0);
     o->debug_print();
     riak::string_map usermeta(o->update_metadata().usermeta());
     usermeta["foo"] = "bar";
     riak::riak_metadata md(usermeta);
     o->update_metadata(md);
-    riak::riak_result r = c->store(o, sp);
-    riak::object_ptr o2(r.choose_sibling(0));
+    riak::result_ptr r(c->store(o, sp));
+    riak::object_ptr o2(r->choose_sibling(0));
     o2->debug_print();
     return true;
 }
@@ -153,7 +153,7 @@ bool test_client()
 
 int main(int argc, char *argv[]) {
        if (
-           //           test_client() && 
+           test_client() && 
            test_pbc_client()  &&
            test_set_bucket() &&
            test_fetch_bucket() &&

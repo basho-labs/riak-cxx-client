@@ -36,13 +36,11 @@ public:
     store_object<T>& dw(int dw) { sp_.dw(dw); return *this; }
     store_object<T>& w(int w) { sp_.w(w); return *this; }
     store_object<T>& r(int r) { r_ = r; return *this; }
-    store_object<T>& return_body(bool val) { sp_.return_body(val); return *this;}
-    store_object<T>& with_value(const T& value) { val_ = value; }
-    store_object<T>& with_mutator();
-    store_object<T>& with_resolver();
+    store_object<T>& return_body(bool val) { sp_.return_body(val); return *this; }
+    store_object<T>& with_value(const T& value) { val_ = value; return *this;  }
  public:
     response<T> operator()() { 
-        response<riak_result> fr = client_->fetch(bkey_.bucket(), bkey_.key(), r_, r_);
+        response<result_ptr> fr = client_->fetch(bkey_.bucket(), bkey_.key(), r_);
         if (fr.error()) return fr.error();
         riak::object_ptr obj = resolver().resolve(fr.value());
         if (obj)
@@ -54,7 +52,7 @@ public:
             obj.reset(new object(bkey_));
             obj->update_value(val_);
         }
-        response<riak_result> result(client_->store(obj, sp_));
+        response<result_ptr> result(client_->store(obj, sp_));
         if (result.error()) return result.error();
         return obj->value();
     }

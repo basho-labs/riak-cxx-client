@@ -176,8 +176,8 @@ pbc_client::del(const string& bucket, const string& key, int dw)
 }
 
 
-response<riak_result>   
-pbc_client::fetch(const string& bucket, const string& key, int r, int pr)
+response<result_ptr>   
+pbc_client::fetch(const string& bucket, const string& key, int r)
 {
     ops::get operation;
     operation.request().set_bucket(bucket);
@@ -188,7 +188,7 @@ pbc_client::fetch(const string& bucket, const string& key, int r, int pr)
     content_vector contents;
     decode_contents(operation.response(), contents);
     riak_version version(riak_bkey(bucket, key), operation.response().vclock());
-    return riak_result(version, contents);
+    return result_ptr(new riak_result(version, contents));
 }
 
 response<bool>
@@ -238,7 +238,7 @@ pbc_client::client_id(uint32_t client_id)
     return true;
 }
 
-response<riak_result>
+response<result_ptr>
 pbc_client::store(object_ptr obj, const store_params& params)
 {
     ops::put operation;
@@ -251,7 +251,7 @@ pbc_client::store(object_ptr obj, const store_params& params)
     content_vector contents;
     decode_contents(operation.response(), contents);
     riak_version version(riak_bkey(obj->bucket(), obj->key()), operation.response().vclock());
-    return riak_result(version, contents);
+    return result_ptr(new riak_result(version, contents));
 }
 
 response<string_vector>

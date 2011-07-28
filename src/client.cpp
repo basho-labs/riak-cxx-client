@@ -31,7 +31,7 @@ struct riak_client_t
 
 struct riak_object_t
 {
-    riak::riak_result p;
+    riak::result_ptr p;
 };
 
 riak_client riak_client_new(const char* host, const char *port)
@@ -126,14 +126,14 @@ string_list riak_list_keys(riak_client c, const char* bucket)
 
 riak_object riak_get(riak_client c, const char* bucket, const char *key)
 {
-    riak::response<riak::riak_result> response = c->p->fetch(bucket, key, 2, 2);
+    riak::response<riak::result_ptr> response(c->p->fetch(bucket, key, 2));
     if (response.error())
     {
         errno = response.error().code();
         return 0;
     }
-    riak::riak_result fr = response.value();
-    if (fr.not_found()) return 0;
+    riak::result_ptr fr(response.value());
+    if (fr->not_found()) return 0;
     riak_object_t* result = new riak_object_t;
     result->p = fr;
     return result;
@@ -146,24 +146,24 @@ void riak_object_free(riak_object o)
 
 const char* riak_object_get_key(riak_object o)
 {
-    return o->p.key().c_str();
+    return o->p->key().c_str();
 }
 
 const char* riak_object_get_bucket(riak_object o)
 {
-    return o->p.bucket().c_str();
+    return o->p->bucket().c_str();
 }
 
 const vclock riak_object_get_vclock(riak_object o)
 {
-    riak::riak_result obj = o->p;
-    std::string vstr = obj.vclock();
+    riak::result_ptr obj(o->p);
+    std::string vstr(obj->vclock());
     if (vstr.empty()) 
         return 0;
     size_t vclen = vstr.size();
     vclock vc = (vclock)(malloc(sizeof(size_t)+vclen));
     *(size_t *)(vc) = vclen;
-    const char *vcstr = o->p.vclock().c_str();
+    const char *vcstr = o->p->vclock().c_str();
     memcpy(vc+sizeof(size_t), vcstr, vclen);
     return vc;
 }

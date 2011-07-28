@@ -26,7 +26,6 @@ namespace riak {
 class RIAKC_API riak_result : public riak_version
 {
 public:
-    explicit riak_result() { }
     explicit riak_result(const riak_version& version)
         : riak_version(version) { }
     riak_result(const riak_version& version, const content_vector& contents)
@@ -65,6 +64,8 @@ public:
 private:
     content_vector contents_;
 };
+
+typedef shared_ptr<riak_result> result_ptr;
 
 } // ::riak
 

@@ -27,8 +27,6 @@ namespace riak {
 class RIAKC_API link
 {
 public:
-    explicit link()
-        : bkey_(), tag_() { }
     link(const std::string& bucket, const std::string& key)
        : bkey_(bucket, key) { }
     link(const std::string& bucket, const std::string& key, 

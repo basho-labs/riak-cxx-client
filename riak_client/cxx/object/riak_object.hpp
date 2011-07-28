@@ -27,8 +27,6 @@ namespace riak {
 class RIAKC_API object : public riak_version
 {
 public: // constructors
-    explicit object(const riak_bkey& bkey)
-        : riak_version(bkey) { }
     explicit object(const riak_version& version)
         : riak_version(version) { }
     object(const riak_version& version, const riak_content& content)

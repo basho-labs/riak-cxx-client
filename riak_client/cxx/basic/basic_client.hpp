@@ -36,8 +36,8 @@ class RIAKC_API basic_client
 public:
     virtual response<bool> ping() = 0;
     virtual response<server_info> get_server_info() = 0;
-    virtual response<riak_result> fetch(const std::string& bucket,
-            const std::string& key, int r, int pr) =0;
+    virtual response<result_ptr> fetch(const std::string& bucket,
+            const std::string& key, int r) = 0;
     virtual response<bool> del(const std::string& bucket,
             const std::string& key, int dw) = 0;
     virtual response<bucket_properties> fetch_bucket(
@@ -46,7 +46,7 @@ public:
             const bucket_properties& properties) = 0;
     virtual response<client_id_t> client_id() = 0;
     virtual response<bool> client_id(client_id_t client_id) = 0;
-    virtual response<riak_result> store(object_ptr object,
+    virtual response<result_ptr> store(object_ptr object,
             const store_params& params) = 0;
     virtual response<string_vector> list_buckets() = 0;
     virtual response<string_vector> list_keys(const std::string& bucket) = 0;
