@@ -61,8 +61,10 @@ riak_client_libincludedir = $(libdir)/riak_client/include
 
 bin_PROGRAMS = riakc
 riakc_SOURCES = src/riakc/riakc.cpp
-riakc_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -I/usr/local/Cellar/readline/6.2.1/include
-riakc_LDFLAGS = -lriak_client -L/usr/local/Cellar/readline/6.2.1/lib -lreadline
+riakc_CXXFLAGS = $(libriak_client_la_CXXFLAGS) 
+# -I/usr/local/Cellar/readline/6.2.1/include
+riakc_LDFLAGS = -lriak_client
+ # -L/usr/local/Cellar/readline/6.2.1/lib -lreadline
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = riak_client.pc

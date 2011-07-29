@@ -1,4 +1,6 @@
+#ifdef HAS_READLINE
 #include "riakc_console.hpp"
+#endif
 #include <riak_client/cxx/riak_client.hpp>
 #include <iostream>
 #include <vector>
@@ -32,6 +34,7 @@ riak::client_ptr make_client(string url_str)
     return client;
 }
 
+#ifdef HAS_READLINE
 void info_command(riak_console& client, const riak::string_vector& tokens);
 void list_command(riak_console& client, const riak::string_vector& tokens);
 void get_command(riak_console& client, const riak::string_vector& tokens);
@@ -137,6 +140,8 @@ void info_command(riak_console& client, const riak::string_vector& tokens)
     print_server_info(client.client());
 }
 
+#endif
+
 std::size_t parse_path_part(const std::string& path, std::string& part, std::size_t start)
 {
     if (path.empty()) return start;
@@ -167,6 +172,8 @@ void print_server_info(riak::client_ptr client)
     cout << "Node name: " << server_info.node() << endl;
     cout << "Server version: " << server_info.version() << endl;
 }
+
+
 
 void do_get(riak::client_ptr client)
 {
@@ -207,8 +214,12 @@ int main(int argc, char *argv[])
     }
     if (command == "console")
     {
+#ifdef HAS_READLINE        
         riak_console console(urlstr, make_client(urlstr));
         return console.run();
+#else
+        cout << "no readline support" << endl;
+#endif
     }
     riak::client_ptr client(make_client(urlstr));
     if (command == "server-info")

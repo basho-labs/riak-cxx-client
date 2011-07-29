@@ -330,8 +330,9 @@ nobase_include_HEADERS = riak_client/cxx/riak_client.hpp \
 
 riak_client_libincludedir = $(libdir)/riak_client/include
 riakc_SOURCES = src/riakc/riakc.cpp
-riakc_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -I/usr/local/Cellar/readline/6.2.1/include
-riakc_LDFLAGS = -lriak_client -L/usr/local/Cellar/readline/6.2.1/lib -lreadline
+riakc_CXXFLAGS = $(libriak_client_la_CXXFLAGS) 
+# -I/usr/local/Cellar/readline/6.2.1/include
+riakc_LDFLAGS = -lriak_client
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = riak_client.pc
 TESTS = $(check_PROGRAMS)
@@ -1173,6 +1174,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-nobase_includeHEADERS uninstall-pkgconfigDATA
 
+ # -L/usr/local/Cellar/readline/6.2.1/lib -lreadline
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
