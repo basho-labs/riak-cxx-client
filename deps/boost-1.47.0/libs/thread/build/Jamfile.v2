@@ -23,8 +23,8 @@
 # riakboost_thread and the boost specific tagging.
 # For the library variant that is not native on the build platform
 # an additional tag is applied:
-# boost_thread_pthread for the pthread variant on windows, and
-# boost_thread_win32 for the win32 variant (likely when built on cygwin).
+# riakboost_thread_pthread for the pthread variant on windows, and
+# riakboost_thread_win32 for the win32 variant (likely when built on cygwin).
 #
 # To request the pthread variant on windows, from boost root you would
 # say e.g:

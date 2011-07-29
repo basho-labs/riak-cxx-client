@@ -17,7 +17,10 @@ tools/build/v2/bjam:
 	cd tools/build/v2 && ./bootstrap.sh 
 
 install: tools/build/v2/bjam
-	tools/build/v2/bjam -d0 --v2 cxxflags="-fPIC -fvisibility=hidden" --prefix=../../build/deps --buildid=riak_client --layout=tagged link=static threading=multi install	
+	tools/build/v2/bjam --v2 cxxflags="-fPIC -fvisibility=hidden" --prefix=../../build/deps --buildid=riak_client --layout=tagged --without-test link=static threading=multi install
+
+test: tools/build/v2/bjam
+	tools/build/v2/bjam --v2 cxxflags="-fPIC -fvisibility=hidden" --prefix=../../build/deps --buildid=riak_client --layout=tagged --with-test link=static threading=multi install
 
 clean:
 	tools/build/v2/bjam --v2 clean && rm -Rf ../../build/deps/include/boost && rm -Rf ../../build/deps/lib/libriakboost*.a && rm -Rf bin.v2
