@@ -14,12 +14,12 @@
  limitations under the License.
  */
 
-#include "test_common.hpp"
+#define BOOST_TEST_MODULE pbc_test
+#include <boost/test/unit_test.hpp>
 #include <riak_client/cxx/riak_client.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <algorithm>
-#include <assert.h>
 #include <cstdio>
 
 using std::string;
@@ -27,83 +27,34 @@ using std::string;
 static const std::string TEST_BUCKET("riak-cxx-test");
 static const std::string TEST_KEY("riak-cxx-test");
 
-bool test_pbc_client()
+BOOST_AUTO_TEST_CASE (test_pbc_client)
 {
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__); 
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
-    assert(c->ping());
+    bool ping = c->ping();
+    BOOST_REQUIRE(ping);
     c->client_id(42);
-    assert(c->client_id() == 42);
-    riak::server_info info = c->get_server_info();
-    return true;
+    BOOST_REQUIRE(c->client_id() == 42);
 }
 
-bool test_list_buckets() 
+BOOST_AUTO_TEST_CASE (test_set_bucket)
 {
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
-    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
-    riak::string_vector v = c->list_buckets();
-    assert(std::find(v.begin(), v.end(), TEST_BUCKET) != v.end());
-    return true;
-}
-
-bool test_list_keys()
-{
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
-    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
-    riak::string_vector v = c->list_keys(TEST_BUCKET);
-    assert(v.size() > 0);
-    return true;
-
-}
-
-bool test_del()
-{
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
-    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
-    riak::string_vector v = c->list_keys(TEST_BUCKET);
-    for (riak::string_vector::size_type i=0;
-         i < v.size(); ++i)
-    {
-        assert(c->del(TEST_BUCKET, v[i], 3));
-    }
-    return true;
-}
-
-
-bool test_set_bucket() 
-{
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
     riak::bucket_properties properties;
     properties.allow_mult(true);
     properties.n_val(3);
-    return c->set_bucket(TEST_BUCKET, properties);
+    BOOST_REQUIRE(c->set_bucket(TEST_BUCKET, properties) == true);
 }
 
-bool test_fetch_bucket() 
+BOOST_AUTO_TEST_CASE (test_fetch_bucket)
 {
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
     riak::bucket_properties result = c->fetch_bucket(TEST_BUCKET);
-    assert(result.allow_mult() == true);
-    assert(result.n_val() == 3);
-    return true;
-
+    BOOST_REQUIRE(result.allow_mult());
+    BOOST_REQUIRE(result.n_val() == 3);
 }
 
-bool test_fetch()
+BOOST_AUTO_TEST_CASE (test_put)
 {
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
-    riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
-    riak::result_ptr fr(c->fetch(TEST_BUCKET, TEST_KEY, 3));
-    assert(fr->contents()[0].value() == TEST_KEY);
-    return true;
-}
-
-bool test_put()
-{
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
     std::cout << riak::tss_client_id() << std::endl;
     riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
     c->client_id(42);
@@ -120,49 +71,59 @@ bool test_put()
     }
     else 
         o = fetch_result->choose_sibling(0);
-    o->debug_print();
     riak::string_map usermeta(o->update_metadata().usermeta());
     usermeta["foo"] = "bar";
     riak::riak_metadata md(usermeta);
     o->update_metadata(md);
     riak::result_ptr r(c->store(o, sp));
     riak::object_ptr o2(r->choose_sibling(0));
-    o2->debug_print();
-    return true;
 }
 
-#include <boost/thread.hpp>
-
-bool test_client()
+BOOST_AUTO_TEST_CASE (test_fetch)
 {
-    TEST_INIT t(__FUNCTION__, __FILE__, __LINE__);
+    riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
+    riak::result_ptr fr(c->fetch(TEST_BUCKET, TEST_KEY, 3));
+    BOOST_REQUIRE(fr->contents()[0].value() == TEST_KEY);
+}
+
+BOOST_AUTO_TEST_CASE (test_list_buckets)
+{
+    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
+    riak::string_vector v = c->list_buckets();
+    BOOST_REQUIRE(std::find(v.begin(), v.end(), TEST_BUCKET) != v.end());
+}
+
+BOOST_AUTO_TEST_CASE (test_list_keys)
+{
+    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
+    riak::string_vector v = c->list_keys(TEST_BUCKET);
+    BOOST_REQUIRE(v.size() > 0);
+}
+
+BOOST_AUTO_TEST_CASE (test_del)
+{
+    riak::client_ptr c = riak::new_client("127.0.0.1", "8087");
+    riak::string_vector v = c->list_keys(TEST_BUCKET);
+    for (riak::string_vector::size_type i=0;
+         i < v.size(); ++i)
+    {
+        BOOST_REQUIRE(c->del(TEST_BUCKET, v[i], 3) == true);
+    }
+}
+
+BOOST_AUTO_TEST_CASE (test_client)
+{
     riak::cluster cluster;
     riak::client client(cluster.make_client());
     riak::basic_bucket<std::string> bucket = client.bucket<std::string>("bucket");
     bucket.del("foo").rw(2)();
     std::string value = bucket.fetch("foo").r(3)();
-    assert(value == "");
+    BOOST_REQUIRE(value == "");
     value = bucket.store("foo", "bar")
         .r(2)
         .w(2)
         .dw(2)();
     value = bucket.fetch("foo").r(3)();
-    assert(value == "bar");
-    return true;
+    BOOST_REQUIRE(value == "bar");
 }
 
-int main(int argc, char *argv[]) {
-       if (
-           test_client() && 
-           test_pbc_client()  &&
-           test_set_bucket() &&
-           test_fetch_bucket() &&
-           test_put() &&
-           test_fetch() &&
-           test_list_buckets() &&
-           test_list_keys() //&&
-           //test_del()  
-           )
-           return 0;
-    return 1;
-}

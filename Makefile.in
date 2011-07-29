@@ -37,8 +37,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = riakc$(EXEEXT)
-check_PROGRAMS = riak_cxx_simple_test$(EXEEXT) \
-	riak_cxx_test_server$(EXEEXT)
+check_PROGRAMS = riak_cxx_unit_test$(EXEEXT)
 subdir = .
 DIST_COMMON = INSTALL $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
@@ -90,25 +89,15 @@ libriak_client_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(libriak_client_la_LDFLAGS) $(LDFLAGS) -o $@
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_riak_cxx_simple_test_OBJECTS =  \
-	test/riak_cxx_simple_test-test_basic.$(OBJEXT)
-riak_cxx_simple_test_OBJECTS = $(am_riak_cxx_simple_test_OBJECTS)
-riak_cxx_simple_test_LDADD = $(LDADD)
-riak_cxx_simple_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+am_riak_cxx_unit_test_OBJECTS =  \
+	test/riak_cxx_unit_test-test_riak_object.$(OBJEXT) \
+	test/riak_cxx_unit_test-test_basic.$(OBJEXT)
+riak_cxx_unit_test_OBJECTS = $(am_riak_cxx_unit_test_OBJECTS)
+riak_cxx_unit_test_LDADD = $(LDADD)
+riak_cxx_unit_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(riak_cxx_simple_test_CXXFLAGS) $(CXXFLAGS) \
-	$(riak_cxx_simple_test_LDFLAGS) $(LDFLAGS) -o $@
-am_riak_cxx_test_server_OBJECTS =  \
-	test/riak_cxx_test_server-test_server.$(OBJEXT) \
-	src/cxx/riak_cxx_test_server-pbc_header.$(OBJEXT) \
-	src/cxx/riak_cxx_test_server-pbc_message.$(OBJEXT) \
-	src/cxx/riak_cxx_test_server-riakclient.pb.$(OBJEXT)
-riak_cxx_test_server_OBJECTS = $(am_riak_cxx_test_server_OBJECTS)
-riak_cxx_test_server_LDADD = $(LDADD)
-riak_cxx_test_server_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) \
-	$(riak_cxx_test_server_LDFLAGS) $(LDFLAGS) -o $@
+	$(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) \
+	$(riak_cxx_unit_test_LDFLAGS) $(LDFLAGS) -o $@
 am_riakc_OBJECTS = src/riakc/riakc-riakc.$(OBJEXT)
 riakc_OBJECTS = $(am_riakc_OBJECTS)
 riakc_LDADD = $(LDADD)
@@ -127,8 +116,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libriak_client_la_SOURCES) $(riak_cxx_simple_test_SOURCES) \
-	$(riak_cxx_test_server_SOURCES) $(riakc_SOURCES)
+SOURCES = $(libriak_client_la_SOURCES) $(riak_cxx_unit_test_SOURCES) \
+	$(riakc_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -336,12 +325,17 @@ riakc_LDFLAGS = -lriak_client
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = riak_client.pc
 TESTS = $(check_PROGRAMS)
-riak_cxx_simple_test_SOURCES = test/test_basic.cpp
-riak_cxx_simple_test_CXXFLAGS = $(libriak_client_la_CXXFLAGS)
-riak_cxx_simple_test_LDFLAGS = -lriak_client
-riak_cxx_test_server_SOURCES = test/test_server.cpp src/cxx/pbc_header.cpp src/cxx/pbc_message.cpp src/cxx/riakclient.pb.cc
-riak_cxx_test_server_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -Isrc/cxx
-riak_cxx_test_server_LDFLAGS = $(libriak_client_la_LDFLAGS) -lriak_client 
+
+#riak_cxx_simple_test_SOURCES = test/test_basic.cpp
+#riak_cxx_simple_test_CXXFLAGS = $(libriak_client_la_CXXFLAGS)
+#riak_cxx_simple_test_LDFLAGS = -lriak_client -lriakboost_unit_test_framework-mt-riak_client
+riak_cxx_unit_test_SOURCES = test/test_riak_object.cpp test/test_basic.cpp
+riak_cxx_unit_test_CXXFLAGS = $(libriak_client_la_CXXFLAGS)
+riak_cxx_unit_test_LDFLAGS = -lriak_client -lriakboost_unit_test_framework-mt-riak_client
+
+#riak_cxx_test_server_SOURCES = test/test_server.cpp src/cxx/pbc_header.cpp src/cxx/pbc_message.cpp src/cxx/riakclient.pb.cc
+#riak_cxx_test_server_CXXFLAGS = $(libriak_client_la_CXXFLAGS) -Isrc/cxx
+#riak_cxx_test_server_LDFLAGS =  $(libriak_client_la_LDFLAGS) -lriak_client 
 CLEANFILES = $(check_PROGRAMS)
 SUBDIRS = deps
 DIST_SUBDIRS = deps
@@ -505,22 +499,13 @@ test/$(am__dirstamp):
 test/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) test/$(DEPDIR)
 	@: > test/$(DEPDIR)/$(am__dirstamp)
-test/riak_cxx_simple_test-test_basic.$(OBJEXT): test/$(am__dirstamp) \
+test/riak_cxx_unit_test-test_riak_object.$(OBJEXT):  \
+	test/$(am__dirstamp) test/$(DEPDIR)/$(am__dirstamp)
+test/riak_cxx_unit_test-test_basic.$(OBJEXT): test/$(am__dirstamp) \
 	test/$(DEPDIR)/$(am__dirstamp)
-riak_cxx_simple_test$(EXEEXT): $(riak_cxx_simple_test_OBJECTS) $(riak_cxx_simple_test_DEPENDENCIES) 
-	@rm -f riak_cxx_simple_test$(EXEEXT)
-	$(riak_cxx_simple_test_LINK) $(riak_cxx_simple_test_OBJECTS) $(riak_cxx_simple_test_LDADD) $(LIBS)
-test/riak_cxx_test_server-test_server.$(OBJEXT): test/$(am__dirstamp) \
-	test/$(DEPDIR)/$(am__dirstamp)
-src/cxx/riak_cxx_test_server-pbc_header.$(OBJEXT):  \
-	src/cxx/$(am__dirstamp) src/cxx/$(DEPDIR)/$(am__dirstamp)
-src/cxx/riak_cxx_test_server-pbc_message.$(OBJEXT):  \
-	src/cxx/$(am__dirstamp) src/cxx/$(DEPDIR)/$(am__dirstamp)
-src/cxx/riak_cxx_test_server-riakclient.pb.$(OBJEXT):  \
-	src/cxx/$(am__dirstamp) src/cxx/$(DEPDIR)/$(am__dirstamp)
-riak_cxx_test_server$(EXEEXT): $(riak_cxx_test_server_OBJECTS) $(riak_cxx_test_server_DEPENDENCIES) 
-	@rm -f riak_cxx_test_server$(EXEEXT)
-	$(riak_cxx_test_server_LINK) $(riak_cxx_test_server_OBJECTS) $(riak_cxx_test_server_LDADD) $(LIBS)
+riak_cxx_unit_test$(EXEEXT): $(riak_cxx_unit_test_OBJECTS) $(riak_cxx_unit_test_DEPENDENCIES) 
+	@rm -f riak_cxx_unit_test$(EXEEXT)
+	$(riak_cxx_unit_test_LINK) $(riak_cxx_unit_test_OBJECTS) $(riak_cxx_unit_test_LDADD) $(LIBS)
 src/riakc/$(am__dirstamp):
 	@$(MKDIR_P) src/riakc
 	@: > src/riakc/$(am__dirstamp)
@@ -551,9 +536,6 @@ mostlyclean-compile:
 	-rm -f src/cxx/libriak_client_la-riakclient.pb.lo
 	-rm -f src/cxx/libriak_client_la-url.$(OBJEXT)
 	-rm -f src/cxx/libriak_client_la-url.lo
-	-rm -f src/cxx/riak_cxx_test_server-pbc_header.$(OBJEXT)
-	-rm -f src/cxx/riak_cxx_test_server-pbc_message.$(OBJEXT)
-	-rm -f src/cxx/riak_cxx_test_server-riakclient.pb.$(OBJEXT)
 	-rm -f src/libriak_client_la-client.$(OBJEXT)
 	-rm -f src/libriak_client_la-client.lo
 	-rm -f src/libriak_client_la-string_list.$(OBJEXT)
@@ -561,8 +543,8 @@ mostlyclean-compile:
 	-rm -f src/libriak_client_la-string_map.$(OBJEXT)
 	-rm -f src/libriak_client_la-string_map.lo
 	-rm -f src/riakc/riakc-riakc.$(OBJEXT)
-	-rm -f test/riak_cxx_simple_test-test_basic.$(OBJEXT)
-	-rm -f test/riak_cxx_test_server-test_server.$(OBJEXT)
+	-rm -f test/riak_cxx_unit_test-test_basic.$(OBJEXT)
+	-rm -f test/riak_cxx_unit_test-test_riak_object.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -578,12 +560,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-riak_object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-riakclient.pb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/libriak_client_la-url.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/riakc/$(DEPDIR)/riakc-riakc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@test/$(DEPDIR)/riak_cxx_test_server-test_server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -686,75 +665,33 @@ src/libriak_client_la-string_map.lo: src/string_map.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libriak_client_la_CXXFLAGS) $(CXXFLAGS) -c -o src/libriak_client_la-string_map.lo `test -f 'src/string_map.cpp' || echo '$(srcdir)/'`src/string_map.cpp
 
-test/riak_cxx_simple_test-test_basic.o: test/test_basic.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_simple_test_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_simple_test-test_basic.o -MD -MP -MF test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Tpo -c -o test/riak_cxx_simple_test-test_basic.o `test -f 'test/test_basic.cpp' || echo '$(srcdir)/'`test/test_basic.cpp
-@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Tpo test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_basic.cpp' object='test/riak_cxx_simple_test-test_basic.o' libtool=no @AMDEPBACKSLASH@
+test/riak_cxx_unit_test-test_riak_object.o: test/test_riak_object.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_unit_test-test_riak_object.o -MD -MP -MF test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Tpo -c -o test/riak_cxx_unit_test-test_riak_object.o `test -f 'test/test_riak_object.cpp' || echo '$(srcdir)/'`test/test_riak_object.cpp
+@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Tpo test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_riak_object.cpp' object='test/riak_cxx_unit_test-test_riak_object.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_simple_test_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_simple_test-test_basic.o `test -f 'test/test_basic.cpp' || echo '$(srcdir)/'`test/test_basic.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_unit_test-test_riak_object.o `test -f 'test/test_riak_object.cpp' || echo '$(srcdir)/'`test/test_riak_object.cpp
 
-test/riak_cxx_simple_test-test_basic.obj: test/test_basic.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_simple_test_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_simple_test-test_basic.obj -MD -MP -MF test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Tpo -c -o test/riak_cxx_simple_test-test_basic.obj `if test -f 'test/test_basic.cpp'; then $(CYGPATH_W) 'test/test_basic.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_basic.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Tpo test/$(DEPDIR)/riak_cxx_simple_test-test_basic.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_basic.cpp' object='test/riak_cxx_simple_test-test_basic.obj' libtool=no @AMDEPBACKSLASH@
+test/riak_cxx_unit_test-test_riak_object.obj: test/test_riak_object.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_unit_test-test_riak_object.obj -MD -MP -MF test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Tpo -c -o test/riak_cxx_unit_test-test_riak_object.obj `if test -f 'test/test_riak_object.cpp'; then $(CYGPATH_W) 'test/test_riak_object.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_riak_object.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Tpo test/$(DEPDIR)/riak_cxx_unit_test-test_riak_object.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_riak_object.cpp' object='test/riak_cxx_unit_test-test_riak_object.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_simple_test_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_simple_test-test_basic.obj `if test -f 'test/test_basic.cpp'; then $(CYGPATH_W) 'test/test_basic.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_basic.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_unit_test-test_riak_object.obj `if test -f 'test/test_riak_object.cpp'; then $(CYGPATH_W) 'test/test_riak_object.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_riak_object.cpp'; fi`
 
-test/riak_cxx_test_server-test_server.o: test/test_server.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_test_server-test_server.o -MD -MP -MF test/$(DEPDIR)/riak_cxx_test_server-test_server.Tpo -c -o test/riak_cxx_test_server-test_server.o `test -f 'test/test_server.cpp' || echo '$(srcdir)/'`test/test_server.cpp
-@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_test_server-test_server.Tpo test/$(DEPDIR)/riak_cxx_test_server-test_server.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_server.cpp' object='test/riak_cxx_test_server-test_server.o' libtool=no @AMDEPBACKSLASH@
+test/riak_cxx_unit_test-test_basic.o: test/test_basic.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_unit_test-test_basic.o -MD -MP -MF test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Tpo -c -o test/riak_cxx_unit_test-test_basic.o `test -f 'test/test_basic.cpp' || echo '$(srcdir)/'`test/test_basic.cpp
+@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Tpo test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_basic.cpp' object='test/riak_cxx_unit_test-test_basic.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_test_server-test_server.o `test -f 'test/test_server.cpp' || echo '$(srcdir)/'`test/test_server.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_unit_test-test_basic.o `test -f 'test/test_basic.cpp' || echo '$(srcdir)/'`test/test_basic.cpp
 
-test/riak_cxx_test_server-test_server.obj: test/test_server.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_test_server-test_server.obj -MD -MP -MF test/$(DEPDIR)/riak_cxx_test_server-test_server.Tpo -c -o test/riak_cxx_test_server-test_server.obj `if test -f 'test/test_server.cpp'; then $(CYGPATH_W) 'test/test_server.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_server.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_test_server-test_server.Tpo test/$(DEPDIR)/riak_cxx_test_server-test_server.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_server.cpp' object='test/riak_cxx_test_server-test_server.obj' libtool=no @AMDEPBACKSLASH@
+test/riak_cxx_unit_test-test_basic.obj: test/test_basic.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -MT test/riak_cxx_unit_test-test_basic.obj -MD -MP -MF test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Tpo -c -o test/riak_cxx_unit_test-test_basic.obj `if test -f 'test/test_basic.cpp'; then $(CYGPATH_W) 'test/test_basic.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_basic.cpp'; fi`
+@am__fastdepCXX_TRUE@	mv -f test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Tpo test/$(DEPDIR)/riak_cxx_unit_test-test_basic.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='test/test_basic.cpp' object='test/riak_cxx_unit_test-test_basic.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_test_server-test_server.obj `if test -f 'test/test_server.cpp'; then $(CYGPATH_W) 'test/test_server.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_server.cpp'; fi`
-
-src/cxx/riak_cxx_test_server-pbc_header.o: src/cxx/pbc_header.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/riak_cxx_test_server-pbc_header.o -MD -MP -MF src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Tpo -c -o src/cxx/riak_cxx_test_server-pbc_header.o `test -f 'src/cxx/pbc_header.cpp' || echo '$(srcdir)/'`src/cxx/pbc_header.cpp
-@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Tpo src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/pbc_header.cpp' object='src/cxx/riak_cxx_test_server-pbc_header.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-pbc_header.o `test -f 'src/cxx/pbc_header.cpp' || echo '$(srcdir)/'`src/cxx/pbc_header.cpp
-
-src/cxx/riak_cxx_test_server-pbc_header.obj: src/cxx/pbc_header.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/riak_cxx_test_server-pbc_header.obj -MD -MP -MF src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Tpo -c -o src/cxx/riak_cxx_test_server-pbc_header.obj `if test -f 'src/cxx/pbc_header.cpp'; then $(CYGPATH_W) 'src/cxx/pbc_header.cpp'; else $(CYGPATH_W) '$(srcdir)/src/cxx/pbc_header.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Tpo src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_header.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/pbc_header.cpp' object='src/cxx/riak_cxx_test_server-pbc_header.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-pbc_header.obj `if test -f 'src/cxx/pbc_header.cpp'; then $(CYGPATH_W) 'src/cxx/pbc_header.cpp'; else $(CYGPATH_W) '$(srcdir)/src/cxx/pbc_header.cpp'; fi`
-
-src/cxx/riak_cxx_test_server-pbc_message.o: src/cxx/pbc_message.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/riak_cxx_test_server-pbc_message.o -MD -MP -MF src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Tpo -c -o src/cxx/riak_cxx_test_server-pbc_message.o `test -f 'src/cxx/pbc_message.cpp' || echo '$(srcdir)/'`src/cxx/pbc_message.cpp
-@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Tpo src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/pbc_message.cpp' object='src/cxx/riak_cxx_test_server-pbc_message.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-pbc_message.o `test -f 'src/cxx/pbc_message.cpp' || echo '$(srcdir)/'`src/cxx/pbc_message.cpp
-
-src/cxx/riak_cxx_test_server-pbc_message.obj: src/cxx/pbc_message.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/riak_cxx_test_server-pbc_message.obj -MD -MP -MF src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Tpo -c -o src/cxx/riak_cxx_test_server-pbc_message.obj `if test -f 'src/cxx/pbc_message.cpp'; then $(CYGPATH_W) 'src/cxx/pbc_message.cpp'; else $(CYGPATH_W) '$(srcdir)/src/cxx/pbc_message.cpp'; fi`
-@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Tpo src/cxx/$(DEPDIR)/riak_cxx_test_server-pbc_message.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/pbc_message.cpp' object='src/cxx/riak_cxx_test_server-pbc_message.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-pbc_message.obj `if test -f 'src/cxx/pbc_message.cpp'; then $(CYGPATH_W) 'src/cxx/pbc_message.cpp'; else $(CYGPATH_W) '$(srcdir)/src/cxx/pbc_message.cpp'; fi`
-
-src/cxx/riak_cxx_test_server-riakclient.pb.o: src/cxx/riakclient.pb.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/riak_cxx_test_server-riakclient.pb.o -MD -MP -MF src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Tpo -c -o src/cxx/riak_cxx_test_server-riakclient.pb.o `test -f 'src/cxx/riakclient.pb.cc' || echo '$(srcdir)/'`src/cxx/riakclient.pb.cc
-@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Tpo src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/riakclient.pb.cc' object='src/cxx/riak_cxx_test_server-riakclient.pb.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-riakclient.pb.o `test -f 'src/cxx/riakclient.pb.cc' || echo '$(srcdir)/'`src/cxx/riakclient.pb.cc
-
-src/cxx/riak_cxx_test_server-riakclient.pb.obj: src/cxx/riakclient.pb.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -MT src/cxx/riak_cxx_test_server-riakclient.pb.obj -MD -MP -MF src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Tpo -c -o src/cxx/riak_cxx_test_server-riakclient.pb.obj `if test -f 'src/cxx/riakclient.pb.cc'; then $(CYGPATH_W) 'src/cxx/riakclient.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/cxx/riakclient.pb.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Tpo src/cxx/$(DEPDIR)/riak_cxx_test_server-riakclient.pb.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/cxx/riakclient.pb.cc' object='src/cxx/riak_cxx_test_server-riakclient.pb.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_test_server_CXXFLAGS) $(CXXFLAGS) -c -o src/cxx/riak_cxx_test_server-riakclient.pb.obj `if test -f 'src/cxx/riakclient.pb.cc'; then $(CYGPATH_W) 'src/cxx/riakclient.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/cxx/riakclient.pb.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riak_cxx_unit_test_CXXFLAGS) $(CXXFLAGS) -c -o test/riak_cxx_unit_test-test_basic.obj `if test -f 'test/test_basic.cpp'; then $(CYGPATH_W) 'test/test_basic.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_basic.cpp'; fi`
 
 src/riakc/riakc-riakc.o: src/riakc/riakc.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(riakc_CXXFLAGS) $(CXXFLAGS) -MT src/riakc/riakc-riakc.o -MD -MP -MF src/riakc/$(DEPDIR)/riakc-riakc.Tpo -c -o src/riakc/riakc-riakc.o `test -f 'src/riakc/riakc.cpp' || echo '$(srcdir)/'`src/riakc/riakc.cpp

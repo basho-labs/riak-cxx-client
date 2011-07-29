@@ -17,9 +17,17 @@ protobufs.ts: $(PROTOBUF_SRC)/Makefile
 	cd $(PROTOBUF_SRC) && make && make install
 	touch protobufs.ts
 
+
+boost-test.ts: 
+	cd $(BOOST_SRC) && make DEPS_CXXFLAGS=$(DEPS_CXXFLAGS) test
+	touch boost-test.ts
+
 $(PROTOBUF_SRC)/Makefile:
 	cd $(PROTOBUF_SRC) && CXXFLAGS=$(DEPS_CXXFLAGS) ./configure \
 	--prefix=$(BUILD_DIR) --disable-shared
+
+check-local: boost-test.ts
+
 
 clean-local:
 
@@ -28,4 +36,5 @@ distclean-local:
 	cd $(BOOST_SRC) && make clean
 	rm -f protobufs.ts
 	rm -f boost.ts
+	rm -f boost-test.ts
 

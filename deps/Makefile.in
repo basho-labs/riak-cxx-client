@@ -224,6 +224,7 @@ ctags: CTAGS
 CTAGS:
 
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
 all-am: Makefile all-local
 installdirs:
@@ -307,17 +308,17 @@ uninstall-am:
 
 .MAKE: install-am install-strip
 
-.PHONY: all all-am all-local check check-am clean clean-generic \
-	clean-libtool clean-local distclean distclean-generic \
-	distclean-libtool distclean-local dvi dvi-am html html-am info \
-	info-am install install-am install-data install-data-am \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am
+.PHONY: all all-am all-local check check-am check-local clean \
+	clean-generic clean-libtool clean-local distclean \
+	distclean-generic distclean-libtool distclean-local dvi dvi-am \
+	html html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am
 
 
 all-local: boost.ts protobufs.ts
@@ -330,9 +331,15 @@ protobufs.ts: $(PROTOBUF_SRC)/Makefile
 	cd $(PROTOBUF_SRC) && make && make install
 	touch protobufs.ts
 
+boost-test.ts: 
+	cd $(BOOST_SRC) && make DEPS_CXXFLAGS=$(DEPS_CXXFLAGS) test
+	touch boost-test.ts
+
 $(PROTOBUF_SRC)/Makefile:
 	cd $(PROTOBUF_SRC) && CXXFLAGS=$(DEPS_CXXFLAGS) ./configure \
 	--prefix=$(BUILD_DIR) --disable-shared
+
+check-local: boost-test.ts
 
 clean-local:
 
@@ -341,6 +348,7 @@ distclean-local:
 	cd $(BOOST_SRC) && make clean
 	rm -f protobufs.ts
 	rm -f boost.ts
+	rm -f boost-test.ts
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
