@@ -1,4 +1,14 @@
 * Riak C/C++ Client
+
+* READ THIS
+
+This is experimental, alpha code. If you're running it in production, you do so at your own risk. While Basho fully intends
+to work on this when our development cycle permits, at the moment this libary is still very young and is in no way complete.  
+In its current state, it will break, and there will be bugs.
+
+That said, we do want for it to become a first class citizen in our Client Library arsenal at some point. With your help, 
+this will be sooner than later. 
+
 ** Overview
 
 This is a WIP of a C/C++ client for Riak. 
