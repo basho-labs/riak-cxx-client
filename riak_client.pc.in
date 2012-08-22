@@ -1,11 +1,11 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_FULL_BINDIR@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
 Name: riak_client
 Description: C++ client for the Riak distributed database.
 Requires: 
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lriak_client
-Cflags: -I${includedir}/riak_client -I${libdir}/riak_client/include
+Cflags: -I${includedir}/riak_client

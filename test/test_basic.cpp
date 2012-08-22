@@ -13,9 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-
-#define BOOST_TEST_MODULE pbc_test
-#include <boost/test/unit_test.hpp>
+#define BOOST_TEST_MAIN
+#include <BoostTestTargetConfig.h>
 #include <riak_client/cxx/riak_client.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>

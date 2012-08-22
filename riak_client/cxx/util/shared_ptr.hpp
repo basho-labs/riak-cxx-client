@@ -16,7 +16,6 @@
 
 #ifndef RIAKCXX_SHARED_PTR_HPP_
 #define RIAKCXX_SHARED_PTR_HPP_
-#include "config.h"
 
 #if defined(HAVE_BOOST_SHARED_PTR) && defined(RIAKC_USE_BOOST_SHARED_PTR)
 #include <boost/shared_ptr.hpp>

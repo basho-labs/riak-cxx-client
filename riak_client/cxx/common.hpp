@@ -23,7 +23,6 @@
 #include <vector>
 #include <map>
 #include <cstddef>
-#include "config.h"
 
 namespace riak { 
 
