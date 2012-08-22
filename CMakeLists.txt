@@ -10,10 +10,17 @@ FIND_PACKAGE(Boost 1.47 REQUIRED system thread)
 FIND_PACKAGE(Protobuf 2.4.1 REQUIRED)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 ADD_DEFINITIONS(-DHAVE_BOOST_SHARED_PTR -DRIAKC_USE_BOOST_SHARED_PTR)
 
+PROTOBUF_GENERATE_CPP(RIAK_PROTO_SOURCES RIAK_PROTO_HEADERS
+                      src/riak_kv.proto
+                      src/riak.proto
+                      src/riak_search.proto)
+
 SET(RIAK_CLIENT_SOURCES
+    ${RIAK_PROTO_SOURCES}
     src/client.cpp
     src/cxx/basic_client.cpp
     src/cxx/connection.cpp
@@ -21,7 +28,6 @@ SET(RIAK_CLIENT_SOURCES
     src/cxx/pbc_header.cpp
     src/cxx/pbc_message.cpp
     src/cxx/riak_object.cpp
-    src/cxx/riakclient.pb.cc
     src/cxx/url.cpp
     src/string_list.cpp
     src/string_map.cpp)

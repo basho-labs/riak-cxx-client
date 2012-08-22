@@ -20,7 +20,8 @@
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/basic/response.hpp>
 #include "pbc_message.hpp"
-#include "src/cxx/riakclient.pb.h"
+#include "riak.pb.h"
+#include "riak_kv.pb.h"
 
 namespace riak { namespace pbc { 
 
