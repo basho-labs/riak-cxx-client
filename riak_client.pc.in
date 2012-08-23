@@ -6,6 +6,6 @@ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 Name: riak_client
 Description: C++ client for the Riak distributed database.
 Requires: 
-Version: @PACKAGE_VERSION@
+Version: @RIAK_CLIENT_VERSION@
 Libs: -L${libdir} -lriak_client
 Cflags: -I${includedir}/riak_client
