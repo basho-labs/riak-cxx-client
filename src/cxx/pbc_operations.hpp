@@ -22,6 +22,7 @@
 #include "pbc_message.hpp"
 #include "riak.pb.h"
 #include "riak_kv.pb.h"
+#include "riak_search.pb.h"
 
 namespace riak { namespace pbc { 
 
@@ -79,6 +80,12 @@ typedef pbc_message<GET_BUCKET_RESP, RpbGetBucketResp> get_bucket_resp;
 typedef pbc_message<SET_BUCKET, RpbSetBucketReq> set_bucket_req;
 typedef pbc_message<SET_BUCKET_RESP> set_bucket_resp;
 
+typedef pbc_message<INDEX, RpbIndexReq> index_req;
+typedef pbc_message<INDEX_RESP, RpbIndexResp> index_resp;
+
+typedef pbc_message<SEARCH_QUERY, RpbSearchQueryReq> search_query_req;
+typedef pbc_message<SEARCH_QUERY_RESP, RpbSearchQueryResp> search_query_resp;
+
 namespace ops {
     typedef operation<ping_req, ping_resp> ping;
     typedef operation<get_server_info_req, get_server_info_resp> get_server_info;
@@ -91,6 +98,8 @@ namespace ops {
     typedef operation<list_keys_req, list_keys_resp> list_keys;
     typedef operation<get_bucket_req, get_bucket_resp> get_bucket;
     typedef operation<set_bucket_req, set_bucket_resp> set_bucket;
+    typedef operation<index_req, index_resp> index;
+    typedef operation<search_query_req, search_query_resp> search;
 } // ::riak::pbc::ops
 
 

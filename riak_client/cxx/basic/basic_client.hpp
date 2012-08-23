@@ -50,6 +50,10 @@ public:
             const store_params& params) = 0;
     virtual response<string_vector> list_buckets() = 0;
     virtual response<string_vector> list_keys(const std::string& bucket) = 0;
+    virtual response<string_vector> index(const std::string& bucket, const std::string& index,
+			const std::string& value) = 0;
+	virtual response<string_vector> index(const std::string& bucket, const std::string& index,
+			const std::string& min, const std::string& max) = 0;
 };
 
 enum RIAKC_API protocol

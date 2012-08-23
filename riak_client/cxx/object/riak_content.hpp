@@ -20,6 +20,7 @@
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/object/link.hpp>
 #include <riak_client/cxx/object/riak_metadata.hpp>
+#include <riak_client/cxx/object/index.hpp>
 #include <string>
 #include <vector>
 
@@ -36,16 +37,19 @@ public: // accessors
     const std::string&   value() const { return value_; }
     const riak_metadata& metadata() const { return metadata_; }
     const link_vector&   links() const { return links_; }
+    const index_vector&  indexes() const { return indexes_; }
 public:  // mutators
     void  value(const std::string& value) { value_ = value; }
     void  metadata(const riak_metadata& md) { metadata_ = md; }
     void  links(const link_vector& links) { links_ = links; }
+    void  indexes(const index_vector& indexes) { indexes_ = indexes; }
  public:
     void  debug_print() const;
 private: // intentionally copyable
     riak_metadata metadata_;
     std::string value_;
     link_vector links_;
+    index_vector indexes_;
 };
 typedef std::vector<riak_content> content_vector;
 

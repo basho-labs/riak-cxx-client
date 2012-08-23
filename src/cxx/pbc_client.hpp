@@ -33,9 +33,9 @@ public:
     response<bool> ping();
     response<server_info> get_server_info();
     response<bool> del(const std::string& bucket, const std::string& key, 
-                       int dw);
+                        int dw);
     response<bool> set_bucket(const std::string& bucket, 
-                              const bucket_properties& properties);
+                                const bucket_properties& properties);
     response<bool> client_id(uint32_t client_id);
     response<uint32_t>      client_id();
     response<result_ptr>  fetch(const std::string& bucket, 
@@ -43,6 +43,10 @@ public:
     response<result_ptr>  store(object_ptr object, const store_params& params);
     response<string_vector> list_buckets();
     response<string_vector> list_keys(const std::string& bucket);
+    response<string_vector> index(const std::string& bucket, const std::string& index,
+								   const std::string& value);
+	response<string_vector> index(const std::string& bucket, const std::string& index,
+								   const std::string& min, const std::string& max);
     response<bucket_properties> fetch_bucket(const std::string& bucket);
 private:
     connection_ptr connection_;

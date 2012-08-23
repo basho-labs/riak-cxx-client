@@ -64,9 +64,13 @@ BOOST_AUTO_TEST_CASE (test_put)
     if (fetch_result->not_found()) 
     {        
         o = riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY);
-        riak::link_vector v = o->update_content().links();
-        v.push_back(riak::link("foo", "bar", "baz"));
-        o->update_content().links(v);
+        riak::link_vector links = o->update_content().links();
+        links.push_back(riak::link("foo", "bar", "baz"));
+        o->update_content().links(links);
+
+        riak::index_vector indexes = o->update_content().indexes();
+        indexes.push_back(riak::index("foo_bin", "bar"));
+        o->update_content().indexes(indexes);
     }
     else 
         o = fetch_result->choose_sibling(0);
@@ -83,6 +87,15 @@ BOOST_AUTO_TEST_CASE (test_fetch)
     riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
     riak::result_ptr fr(c->fetch(TEST_BUCKET, TEST_KEY, 3));
     BOOST_REQUIRE(fr->contents()[0].value() == TEST_KEY);
+}
+
+BOOST_AUTO_TEST_CASE (test_index)
+{
+    riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
+    riak::string_vector v = c->index(TEST_BUCKET, "foo_bin", "bar");
+    BOOST_REQUIRE(std::find(v.begin(), v.end(), TEST_KEY) != v.end());
+    v = c->index(TEST_BUCKET, "foo_bin", "bab", "bas");
+    BOOST_REQUIRE(std::find(v.begin(), v.end(), TEST_KEY) != v.end());
 }
 
 BOOST_AUTO_TEST_CASE (test_list_buckets)
