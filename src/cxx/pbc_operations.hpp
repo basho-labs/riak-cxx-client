@@ -99,7 +99,7 @@ namespace ops {
     typedef operation<get_bucket_req, get_bucket_resp> get_bucket;
     typedef operation<set_bucket_req, set_bucket_resp> set_bucket;
     typedef operation<index_req, index_resp> index;
-    typedef operation<search_query_req, search_query_resp> search;
+    typedef operation<search_query_req, search_query_resp> search_query;
 } // ::riak::pbc::ops
 
 

@@ -322,15 +322,60 @@ pbc_client::index(const std::string& bucket, const std::string& index,
 {
 	string_vector result;
 	ops::index operation;
-	operation.request().set_bucket(bucket);
-	operation.request().set_index(index);
-	operation.request().set_qtype(RpbIndexReq_IndexQueryType_range);
-	operation.request().set_range_min(min);
-	operation.request().set_range_max(max);
+	ops::index::request_type& request = operation.request();
+	request.set_bucket(bucket);
+	request.set_index(index);
+	request.set_qtype(RpbIndexReq_IndexQueryType_range);
+	request.set_range_min(min);
+	request.set_range_max(max);
 	riak_error error = execute(connection_, operation);
 	if (error) return error;
 	for (int i=0;i<operation.response().keys_size();++i)
 		result.push_back(operation.response().keys(i));
+	return result;
+}
+
+response<string_map_vector>
+pbc_client::search(const std::string& query, const std::string& index,
+					 const string_vector& fl, int32_t rows, int32_t start,
+			         const std::string& sort, const std::string& filter,
+			         const std::string& df, const std::string& op,
+			         const std::string& presort)
+{
+	ops::search_query operation;
+	ops::search_query::request_type& request = operation.request();
+	request.set_q(query);
+	request.set_index(index);
+	for (string_vector::const_iterator i = fl.begin(); i != fl.end(); ++i)
+		request.add_fl(*i);
+	if (rows > 0)
+		request.set_rows(rows);
+	if (start > 0)
+		request.set_start(start);
+	if (!sort.empty())
+		request.set_sort(sort);
+	if (!filter.empty())
+		request.set_filter(filter);
+	if (!df.empty())
+		request.set_df(df);
+	if (!op.empty())
+		request.set_op(op);
+	if (!presort.empty())
+		request.set_presort(presort);
+	riak_error error = execute(connection_, operation);
+	if (error) return error;
+	string_map_vector result;
+	ops::search_query::response_type& response = operation.response();
+	for (int i = 0; i < response.docs_size(); ++i)
+	{
+		string_map fields;
+		const RpbSearchDoc& doc = response.docs(i);
+		for (int j = 0; j < doc.fields_size(); ++j) {
+			const RpbPair& field = doc.fields(j);
+			fields.insert(std::make_pair(field.key(), field.value()));
+		}
+		result.push_back(fields);
+	}
 	return result;
 }
 

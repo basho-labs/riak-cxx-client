@@ -28,6 +28,7 @@ namespace riak {
 
 typedef std::vector<std::string> string_vector;
 typedef std::map<std::string, std::string> string_map;
+typedef std::vector<string_map> string_map_vector;
 
 } // ::riak
 

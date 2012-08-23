@@ -47,6 +47,14 @@ public:
 								   const std::string& value);
 	response<string_vector> index(const std::string& bucket, const std::string& index,
 								   const std::string& min, const std::string& max);
+	response<string_map_vector> search(const std::string& query, const std::string& index,
+										const string_vector& fl = string_vector(),
+			                            int32_t rows = -1, int32_t start = -1,
+			                            const std::string& sort = std::string(),
+			                            const std::string& filter = std::string(),
+			                            const std::string& df = std::string(),
+			                            const std::string& op = std::string(),
+			                            const std::string& presort = std::string());
     response<bucket_properties> fetch_bucket(const std::string& bucket);
 private:
     connection_ptr connection_;

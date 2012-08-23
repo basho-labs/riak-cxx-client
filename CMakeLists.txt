@@ -43,8 +43,11 @@ TARGET_LINK_LIBRARIES(riak_client ${PROTOBUF_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${
 ADD_EXECUTABLE(riakc src/riakc/riakc.cpp)
 TARGET_LINK_LIBRARIES(riakc riak_client)
 
+ADD_CUSTOM_TARGET(InstallSearchKVHook search-cmd install riak-cxx-test)
+
 INCLUDE(BoostTestTargets)
 ADD_BOOST_TEST(TestRiakBasic SOURCES test/test_basic.cpp LIBRARIES riak_client)
+ADD_DEPENDENCIES(${TestRiakBasic_TARGET_NAME} InstallSearchKVHook)
 ADD_BOOST_TEST(TestRiakObject SOURCES test/test_riak_object.cpp LIBRARIES riak_client)
 
 INCLUDE(GNUInstallDirs)
