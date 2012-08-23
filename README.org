@@ -8,6 +8,7 @@ Unlike original Basho C/C++ client this one has:
 - no embedded dependencies (protobufs, boost)
 - CMake instead of Autotools
 - secondary index support
+- search support
 
 ** Overview
 
