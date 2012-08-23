@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(riak_client) 
+SET(RIAK_CLIENT_VERSION 1.0.0)
+SET(RIAK_API_VERSION 1.0)
 
 INCLUDE(CTest)
 
@@ -28,8 +30,8 @@ SET(RIAK_CLIENT_SOURCES
 
 ADD_LIBRARY(riak_client SHARED ${RIAK_CLIENT_SOURCES})
 SET_TARGET_PROPERTIES(riak_client PROPERTIES
-                      VERSION 1.0.0
-                      SOVERSION 1.0)
+                      VERSION ${RIAK_CLIENT_VERSION}
+                      SOVERSION ${RIAK_API_VERSION})
 TARGET_LINK_LIBRARIES(riak_client ${PROTOBUF_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
 
 ADD_EXECUTABLE(riakc src/riakc/riakc.cpp)
@@ -53,7 +55,7 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/riak_client.pc.in"
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/riak_client.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
                "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                IMMEDIATE @ONLY)
 
