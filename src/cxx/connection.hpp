@@ -28,7 +28,8 @@ namespace riak {
 class connection : private noncopyable  
 { 
 public:
-    connection(const std::string& host, const std::string& port);
+    connection(const std::string& host, const std::string& port,
+               boost::posix_time::time_duration timeout = boost::posix_time::time_duration(0, 5, 0));
     ~connection();
 public:
     /// Start the connection
@@ -41,8 +42,12 @@ public: // io
 private:
     std::string host_;
     std::string port_;
+    boost::posix_time::time_duration timeout_;
     io::io_service io_service_;
     io::tcp_socket socket_;
+    io::deadline_timer deadline_timer_;
+
+    void check_deadline();
 };
 
 } // :: riak

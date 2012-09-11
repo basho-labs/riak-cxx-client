@@ -21,6 +21,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/read.hpp>
 #include <boost/asio/write.hpp>
+#include <boost/asio/deadline_timer.hpp>
 
 
 namespace riak { 
@@ -28,10 +29,13 @@ namespace riak {
         using boost::asio::buffer;
         using boost::asio::read;
         using boost::asio::write;
+        using boost::asio::async_read;
+        using boost::asio::async_write;
         using boost::asio::transfer_all;
         using boost::asio::io_service;
         using boost::asio::mutable_buffer;
         using boost::asio::const_buffer;
+        using boost::asio::deadline_timer;
         namespace ip = boost::asio::ip;
         typedef ip::tcp::socket tcp_socket;
     } // ::io
