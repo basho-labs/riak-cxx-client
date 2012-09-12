@@ -34,9 +34,10 @@ uint32_t tss_client_id()
 }
 
 
-client_ptr new_client(const std::string& host, const std::string& port, const protocol p)
+client_ptr new_client(const std::string& host, const std::string& port, boost::posix_time::time_duration timeout,
+                      const protocol p)
 {
-    return client_ptr(new pbc::pbc_client(host, port));
+    return client_ptr(new pbc::pbc_client(host, port, timeout));
 }
 
 } // ::riak

@@ -27,7 +27,8 @@ namespace riak { namespace pbc {
 class pbc_client : public riak::basic_client
 { 
 public:
-    pbc_client(const std::string& host, const std::string& port);
+    pbc_client(const std::string& host, const std::string& port,
+               boost::posix_time::time_duration timeout = boost::posix_time::time_duration(0, 1, 0));
     virtual ~pbc_client();
 public:
     response<bool> ping();

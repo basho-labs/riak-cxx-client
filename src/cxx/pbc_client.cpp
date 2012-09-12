@@ -148,8 +148,9 @@ riak_error execute(connection_ptr c, Operation& op)
     return error;
 }
 
-pbc_client::pbc_client(const string& host, const string& port)
-    : connection_(new connection(host, port))
+pbc_client::pbc_client(const string& host, const string& port,
+                       boost::posix_time::time_duration timeout)
+    : connection_(new connection(host, port, timeout))
 {
     connection_->start();
     //client_id(tss_client_id());

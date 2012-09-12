@@ -29,7 +29,7 @@ class connection : private noncopyable
 { 
 public:
     connection(const std::string& host, const std::string& port,
-               boost::posix_time::time_duration timeout = boost::posix_time::time_duration(0, 5, 0));
+               boost::posix_time::time_duration timeout = boost::posix_time::time_duration(0, 1, 0));
     ~connection();
 public:
     /// Start the connection

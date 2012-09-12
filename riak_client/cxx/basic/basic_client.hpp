@@ -17,6 +17,7 @@
 #ifndef RIAKCXX_BASIC_CLIENT_HPP_
 #define RIAKCXX_BASIC_CLIENT_HPP_
 
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/basic/riak_result.hpp>
 #include <riak_client/cxx/basic/response.hpp>
@@ -73,8 +74,10 @@ enum RIAKC_API protocol
 RIAKC_API client_id_t tss_client_id();
 
 
-RIAKC_API client_ptr new_client(const std::string& host,
-        const std::string& port, const protocol protocol = PBC);
+RIAKC_API client_ptr new_client(const std::string& host, const std::string& port,
+                                boost::posix_time::time_duration timeout =
+                                    boost::posix_time::time_duration(0, 1, 0),
+                                    const protocol protocol = PBC);
 
 } // :: riak
 
