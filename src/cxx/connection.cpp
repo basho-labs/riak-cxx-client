@@ -70,7 +70,7 @@ connection::start()
     }
 
     if (ec)
-        return riak_error(ec.value(), ec.message());
+        throw riak::exception(riak_error(ec.value(), ec.message()));
 
     return true;
 }
