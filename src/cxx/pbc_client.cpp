@@ -200,6 +200,7 @@ pbc_client::fetch(const string& bucket, const string& key, int r)
     operation.request().set_bucket(bucket);
     operation.request().set_key(key);
     operation.request().set_r(r);
+    operation.request().set_notfound_ok(false);
     riak_error error = execute(connection_, operation);
     if (error) return error;
     content_vector contents;
