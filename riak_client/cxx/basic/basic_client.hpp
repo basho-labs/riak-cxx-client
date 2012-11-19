@@ -17,6 +17,7 @@
 #ifndef RIAKCXX_BASIC_CLIENT_HPP_
 #define RIAKCXX_BASIC_CLIENT_HPP_
 
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <riak_client/cxx/basic/riak_result.hpp>
 #include <riak_client/cxx/basic/response.hpp>
@@ -50,6 +51,19 @@ public:
             const store_params& params) = 0;
     virtual response<string_vector> list_buckets() = 0;
     virtual response<string_vector> list_keys(const std::string& bucket) = 0;
+    virtual response<string_vector> index(const std::string& bucket,
+    		const std::string& index, const std::string& value) = 0;
+	virtual response<string_vector> index(const std::string& bucket,
+			const std::string& index, const std::string& min,
+			const std::string& max) = 0;
+	virtual response<string_map_vector> search(const std::string& query,
+			const std::string& index, const string_vector& fl = string_vector(),
+			int32_t rows = -1, int32_t start = -1,
+			const std::string& sort = std::string(),
+			const std::string& filter = std::string(),
+			const std::string& df = std::string(),
+			const std::string& op = std::string(),
+			const std::string& presort = std::string()) = 0;
 };
 
 enum RIAKC_API protocol
@@ -60,8 +74,10 @@ enum RIAKC_API protocol
 RIAKC_API client_id_t tss_client_id();
 
 
-RIAKC_API client_ptr new_client(const std::string& host,
-        const std::string& port, const protocol protocol = PBC);
+RIAKC_API client_ptr new_client(const std::string& host, const std::string& port,
+                                boost::posix_time::time_duration timeout =
+                                    boost::posix_time::time_duration(0, 1, 0),
+                                    const protocol protocol = PBC);
 
 } // :: riak
 

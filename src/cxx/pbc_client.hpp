@@ -27,15 +27,16 @@ namespace riak { namespace pbc {
 class pbc_client : public riak::basic_client
 { 
 public:
-    pbc_client(const std::string& host, const std::string& port);
+    pbc_client(const std::string& host, const std::string& port,
+               boost::posix_time::time_duration timeout = boost::posix_time::time_duration(0, 1, 0));
     virtual ~pbc_client();
 public:
     response<bool> ping();
     response<server_info> get_server_info();
     response<bool> del(const std::string& bucket, const std::string& key, 
-                       int dw);
+                        int dw);
     response<bool> set_bucket(const std::string& bucket, 
-                              const bucket_properties& properties);
+                                const bucket_properties& properties);
     response<bool> client_id(uint32_t client_id);
     response<uint32_t>      client_id();
     response<result_ptr>  fetch(const std::string& bucket, 
@@ -43,6 +44,18 @@ public:
     response<result_ptr>  store(object_ptr object, const store_params& params);
     response<string_vector> list_buckets();
     response<string_vector> list_keys(const std::string& bucket);
+    response<string_vector> index(const std::string& bucket, const std::string& index,
+								   const std::string& value);
+	response<string_vector> index(const std::string& bucket, const std::string& index,
+								   const std::string& min, const std::string& max);
+	response<string_map_vector> search(const std::string& query, const std::string& index,
+										const string_vector& fl = string_vector(),
+			                            int32_t rows = -1, int32_t start = -1,
+			                            const std::string& sort = std::string(),
+			                            const std::string& filter = std::string(),
+			                            const std::string& df = std::string(),
+			                            const std::string& op = std::string(),
+			                            const std::string& presort = std::string());
     response<bucket_properties> fetch_bucket(const std::string& bucket);
 private:
     connection_ptr connection_;

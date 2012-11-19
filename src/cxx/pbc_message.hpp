@@ -51,6 +51,11 @@ static const msgcode_t GET_BUCKET_RESP      = 20;
 static const msgcode_t SET_BUCKET    = 21;
 static const msgcode_t SET_BUCKET_RESP      = 22;
 static const msgcode_t MAPRED = 23;
+static const msgcode_t MAPRED_RESP = 24;
+static const msgcode_t INDEX = 25;
+static const msgcode_t INDEX_RESP = 26;
+static const msgcode_t SEARCH_QUERY = 27;
+static const msgcode_t SEARCH_QUERY_RESP = 28;
 
 }
 
