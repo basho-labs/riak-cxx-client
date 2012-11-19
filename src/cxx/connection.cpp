@@ -63,19 +63,19 @@ connection::start()
         deadline_timer_.expires_from_now(timeout_);
         socket_.async_connect(*it++, var(ec) = _1);
         do io_service_.run_one(); while (ec == boost::asio::error::would_block);
-        if (ec || !socket_.is_open()) {
-            ec = ec ? ec : boost::asio::error::operation_aborted;
-            break;
-        }
     }
 
+    if (ec || !socket_.is_open())
+       ec = ec ? ec : boost::asio::error::operation_aborted;
+
+    deadline_timer_.expires_at(boost::posix_time::pos_infin);
     if (ec)
         throw riak::exception(riak_error(ec.value(), ec.message()));
 
     return true;
 }
 
-std::size_t 
+std::size_t
 connection::write(io::const_buffer buf) {
     error_code ec = boost::asio::error::would_block;
     deadline_timer_.expires_from_now(timeout_);
@@ -83,6 +83,7 @@ connection::write(io::const_buffer buf) {
     io::async_write(socket_, io::buffer(buf), io::transfer_all(),
                     (var(ec) = _1, var(n) += _2));
     do io_service_.run_one(); while (ec == boost::asio::error::would_block);
+    deadline_timer_.expires_at(boost::posix_time::pos_infin);
     if (ec)
        throw riak::exception(riak_error(ec.value(), ec.message()));
     return n;
@@ -96,6 +97,7 @@ connection::read(io::mutable_buffer buf) {
     io::async_read(socket_, io::buffer(buf), io::transfer_all(),
                    (var(ec) = _1, var(n) += _2));
     do io_service_.run_one(); while (ec == boost::asio::error::would_block);
+    deadline_timer_.expires_at(boost::posix_time::pos_infin);
     if (ec)
         throw riak::exception(riak_error(ec.value(), ec.message()));
     return n;
