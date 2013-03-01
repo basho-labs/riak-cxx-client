@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include "pbc_fwd.hpp"
 #include "pbc_storage.hpp"
-    
-namespace riak { namespace pbc { 
+
+namespace riak { namespace pbc {
 
 typedef unsigned char msgcode_t;
 
@@ -68,7 +68,7 @@ struct pbc_message : public P
 
     std::size_t size() const { return P::ByteSize(); }
 
-    bool serialize(pbc_storage& storage) const { 
+    bool serialize(pbc_storage& storage) const {
         return pbc_serialize(code, storage, this);
     }
 
@@ -84,7 +84,7 @@ struct pbc_message<code, null_pbc_type>
 
     std::size_t size() const { return 0; }
 
-    bool serialize(pbc_storage& storage) const { 
+    bool serialize(pbc_storage& storage) const {
         return pbc_serialize(code, storage);
     }
 

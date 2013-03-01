@@ -6,7 +6,7 @@
   You may obtain a copy of the License at
 
   http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,8 +23,8 @@
 #include <boost/asio/write.hpp>
 
 
-namespace riak { 
-    namespace io { 
+namespace riak {
+    namespace io {
         using riakboost::asio::buffer;
         using riakboost::asio::read;
         using riakboost::asio::write;

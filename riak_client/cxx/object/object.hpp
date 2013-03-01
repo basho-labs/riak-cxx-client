@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@
 #include <string>
 #include <map>
 
-namespace riak { 
+namespace riak {
 
 
 template <class ValueType>
@@ -33,7 +33,7 @@ struct basic_content
     typedef ValueType    value_type;
 public:
     basic_content() : value_() { }
-    basic_content(const value_type& value) : value_(value) { } 
+    basic_content(const value_type& value) : value_(value) { }
 public:
     const value_type    value() const;
     operator const value_type() const { return value_; }

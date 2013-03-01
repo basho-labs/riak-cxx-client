@@ -16,7 +16,7 @@ struct test_object
   RpbPutReq obj;
 };
 
-struct test_bucket 
+struct test_bucket
 {
   std::string name;
   bool allow_mult;
@@ -24,11 +24,11 @@ struct test_bucket
   std::map<std::string, test_object> objects;
 };
 
-class test_server 
+class test_server
 {
 public:
   test_server()
-    : sock_(), client_id_(0) {} 
+    : sock_(), client_id_(0) {}
 
   template <class Operation>
   void receive_request(Operation& op)
@@ -50,7 +50,7 @@ public:
     r::pbc_storage storage(op.response().size()+pbc::pbc_header::HEADER_SIZE);
     op.response().serialize(storage);
     std::size_t n = boost::asio::write(*sock_, boost::asio::buffer(storage.data(), storage.size()),
-                    boost::asio::transfer_all(), error_);    
+                    boost::asio::transfer_all(), error_);
   }
 
   template <class Operation>
@@ -62,13 +62,13 @@ public:
     handle_operation(op);
     send_response(op);
     maybe_throw();
-    return r::riak_error();    
+    return r::riak_error();
   }
 
   void recv_header()
   {
     error_.clear();
-    size_t length = boost::asio::read(*sock_, boost::asio::buffer(header_buf_), 
+    size_t length = boost::asio::read(*sock_, boost::asio::buffer(header_buf_),
                           boost::asio::transfer_all(), error_);
 
     if (error_) return;
@@ -81,14 +81,14 @@ public:
       throw r::exception(r::riak_error(error_.value(), error_.message()));
   }
 
-  void start(socket_ptr sock) 
+  void start(socket_ptr sock)
   {
     sock_ = sock;
     while (true)
     {
       recv_header();
       maybe_throw();
-      switch (header_.code()) 
+      switch (header_.code())
       {
       case pbc::PING:
         handle_request<pbc::ops::ping>();
@@ -103,13 +103,13 @@ public:
         handle_request<pbc::ops::get_bucket>();
         break;
       case pbc::SET_BUCKET:
-        handle_request<pbc::ops::set_bucket>();  
-        break;  
+        handle_request<pbc::ops::set_bucket>();
+        break;
       case pbc::LIST_BUCKETS:
         handle_request<pbc::ops::list_buckets>();
-        break;  
+        break;
       case pbc::LIST_KEYS:
-        handle_request<pbc::ops::list_keys>();              
+        handle_request<pbc::ops::list_keys>();
         break;
       case pbc::PUT:
         handle_request<pbc::ops::put>();
@@ -181,7 +181,7 @@ void test_server::handle_operation<pbc::ops::list_buckets>(pbc::ops::list_bucket
 {
   for (std::map<std::string, test_bucket>::iterator it=data_.begin();
        it != data_.end();
-       ++it) 
+       ++it)
     op.response().add_buckets(it->first);
 }
 
@@ -189,11 +189,11 @@ template <>
 void test_server::handle_operation<pbc::ops::list_keys>(pbc::ops::list_keys& op)
 {
   std::map<std::string, test_bucket>::iterator it = data_.find(op.request().bucket());
-  if (it != data_.end())  
+  if (it != data_.end())
   {
     for (std::map<std::string, test_object>::iterator it2=it->second.objects.begin();
          it2 != it->second.objects.end();
-         ++it2)        
+         ++it2)
       {
         std::string key(it2->first);
         op.response().add_keys(key);
@@ -256,8 +256,8 @@ void server_loop(short port)
   {
     socket_ptr sock(new tcp::socket(io_service));
     a.accept(*sock);
-    try 
-    { 
+    try
+    {
       server.start(sock);
     }
     catch (...) { }

@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,12 @@
 #include <string>
 #include <vector>
 
-namespace riak { 
+namespace riak {
 
 class RIAKC_API riak_content {
 public: // constructors
     explicit riak_content() { }
-    explicit riak_content(const std::string& value) 
+    explicit riak_content(const std::string& value)
         : value_(value) { }
     riak_content(const riak_metadata& metadata, const std::string& value)
         : metadata_(metadata), value_(value) { }

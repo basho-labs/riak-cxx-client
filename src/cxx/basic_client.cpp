@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@
 
 namespace riak {
 
-uint32_t tss_client_id() 
+uint32_t tss_client_id()
 {
     std::stringstream ostr;
     ostr << boost::this_thread::get_id();

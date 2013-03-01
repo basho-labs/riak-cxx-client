@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@
 #include <cstdlib>
 #include <cassert>
 
-namespace riak { 
+namespace riak {
 
 template <typename T, std::size_t SIZE=256>
 class auto_buffer : private noncopyable
@@ -39,9 +39,9 @@ public: // construction
     explicit auto_buffer(size_type size)
         : buffer_((space <  size) ? (T*)malloc(size*sizeof(T)) : &internal_[0]),
           size_((buffer_ != 0) ? size : 0) {}
-    ~auto_buffer() 
+    ~auto_buffer()
     {
-        if (space < size_) 
+        if (space < size_)
         {
             assert(buffer_ != 0);
             assert(&internal_[0] != buffer_);
@@ -58,7 +58,7 @@ public:  // accessors
     const_pointer   data() const { return buffer_; }
     size_type       size() const { return size_; }
     bool            empty() const { return size_ == 0; }
-private: 
+private:
     value_type* buffer_;
     size_type   size_;
     value_type  internal_[SIZE];

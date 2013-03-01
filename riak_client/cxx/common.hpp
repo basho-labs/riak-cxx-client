@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@
 #include <cstddef>
 #include "config.h"
 
-namespace riak { 
+namespace riak {
 
 typedef std::vector<std::string> string_vector;
 typedef std::map<std::string, std::string> string_map;

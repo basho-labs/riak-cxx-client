@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,19 +44,19 @@ public: // constructors
     cluster(const node& seed_node)
         : seed_node_(seed_node) { }
 public:
-    client make_client() 
+    client make_client()
     {
         return make_client(seed_node_.host(), seed_node_.port());
     }
-    static client make_client(const std::string& host, const std::string& port) 
+    static client make_client(const std::string& host, const std::string& port)
     {
         return client(host, port);
     }
-    
+
 private:
     node seed_node_;
     std::vector<node> nodes_;
-};    
+};
 
 } // ::riak
 

@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,12 @@
 
 #if defined(HAVE_BOOST_SHARED_PTR) && defined(RIAKC_USE_BOOST_SHARED_PTR)
 #include <boost/shared_ptr.hpp>
-namespace riak { 
+namespace riak {
     using boost::shared_ptr;
 }
 #elif defined(HAVE_TR1_SHARED_PTR)
 #include <tr1/memory>
-namespace riak { 
+namespace riak {
     using std::tr1::shared_ptr;
 }
 #else

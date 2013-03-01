@@ -27,17 +27,17 @@ namespace riak {
 class RIAKC_API delete_object
 {
 public:
-    delete_object(client_ptr client, const std::string& bucket, 
+    delete_object(client_ptr client, const std::string& bucket,
                   const std::string& key)
         : client_(client), bucket_(bucket), key_(key) {}
 public:
-    delete_object& rw(int rw) 
+    delete_object& rw(int rw)
     {
         rw_ = rw;
         return *this;
     }
-    
-    response<bool> operator()() { 
+
+    response<bool> operator()() {
         response<bool> result(client_->del(bucket_, key_, rw_));
         if (result.error()) throw;
         return true;
@@ -47,7 +47,7 @@ private:
     std::string bucket_;
     std::string key_;
     int rw_;
-    
+
 };
 
 } // ::riak

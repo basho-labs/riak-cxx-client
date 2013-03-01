@@ -50,7 +50,7 @@ void get_command(riak_console& client, const riak::string_vector& tokens)
     cout << endl;
     if (result->not_found())
         cout << "not found." << endl;
-    else 
+    else
     {
         cout << endl;
         result->choose_sibling(0)->debug_print();
@@ -69,7 +69,7 @@ void put_command(riak_console& client, const riak::string_vector& tokens)
     ifstream input_file(arg.c_str(),ios::binary);
     if (!input_file.is_open())
         value = arg;
-    else 
+    else
     {
         stringstream buffer;
         buffer << input_file.rdbuf();
@@ -83,7 +83,7 @@ void put_command(riak_console& client, const riak::string_vector& tokens)
     {
         o = riak::make_object(client.context().bucket, key, value);
     }
-    else 
+    else
     {
         o = result->choose_sibling(0);
         o->update_value(value);
@@ -116,7 +116,7 @@ void list_command(riak_console& client, const riak::string_vector& tokens)
         cout << "---------------" << endl;
         cout << buckets.size() << " buckets found\n" << endl;
     }
-    else 
+    else
     {
         riak::string_vector keys = client.client()->list_keys(client.context().bucket);
         cout << endl;
@@ -129,7 +129,7 @@ void list_command(riak_console& client, const riak::string_vector& tokens)
             cout << *it << endl;
         }
         cout << "---------------" << endl;
-        cout << keys.size() << " keys found\n" << endl;        
+        cout << keys.size() << " keys found\n" << endl;
     }
 }
 
@@ -195,11 +195,11 @@ void print_help()
     cout << "get,set,server-info,help" << endl;
 }
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
     string command;
     string urlstr = DEFAULT_URL;
-    if (argc == 1) 
+    if (argc == 1)
     {
         command = "help";
     }
@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
     }
     if (command == "console")
     {
-#ifdef HAS_READLINE        
+#ifdef HAS_READLINE
         riak_console console(urlstr, make_client(urlstr));
         return console.run();
 #else
@@ -224,6 +224,6 @@ int main(int argc, char *argv[])
     riak::client_ptr client(make_client(urlstr));
     if (command == "server-info")
         print_server_info(client);
-    if (command == "get") 
+    if (command == "get")
         do_get(client);
 }

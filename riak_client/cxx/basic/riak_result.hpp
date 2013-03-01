@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
 #include <riak_client/cxx/error.hpp>
 #include <riak_client/cxx/object.hpp>
 
-namespace riak { 
+namespace riak {
 
 class RIAKC_API riak_result : public riak_version
 {
@@ -45,17 +45,17 @@ public:
     bool          not_found() const { return contents_.empty(); }
     std::size_t   sibling_count() const { return contents_.size(); }
     const content_vector& contents() const { return contents_; }
-    operator object() 
+    operator object()
     {
-        if (contents_.size() != 1) 
+        if (contents_.size() != 1)
         {
             throw riak::exception("unresolved conflict");
         }
         return object(*this, contents_[0]);
     }
-    operator const object() const 
-    { 
-        if (contents_.size() != 1) 
+    operator const object() const
+    {
+        if (contents_.size() != 1)
         {
             throw riak::exception("unresolved conflict");
         }

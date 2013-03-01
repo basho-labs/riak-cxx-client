@@ -1,7 +1,7 @@
 /**
   @file    riak_version.hpp
   @brief   Riak Keys and Object Versions */
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,8 @@
 #include <riak_client/cxx/riak_client_fwd.hpp>
 #include <string>
 
-namespace riak {  
-  
+namespace riak {
+
 class RIAKC_API riak_bkey
 {
 public: // constructors
@@ -41,7 +41,7 @@ class RIAKC_API riak_version
 {
  public: // constructors
     riak_version(const riak_bkey& bkey)
-        : bkey_(bkey) { } 
+        : bkey_(bkey) { }
     riak_version(const riak_bkey& bkey, const std::string& vclock)
         : bkey_(bkey), vclock_(vclock) { }
 public: // accessors

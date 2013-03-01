@@ -22,15 +22,15 @@
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
 
-namespace riak { 
+namespace riak {
 
 /// Customizable properties of a Riak Bucket.
-/// 
+///
 /// @see http://wiki.basho.com/Basic-Riak-API-Operations.html
 class RIAKC_API bucket_properties
 {
 public:
-    bucket_properties() 
+    bucket_properties()
         : allow_mult_(false), n_val_(-1) { }
 
     /// Return the value of the <dfn>allow_mult</dfn> bucket property.
@@ -41,7 +41,7 @@ public:
 
     /// Return the <dfn>n-val</dfn> bucket property.
     ///
-    /// The n-value is the replication factor of a bucket.  
+    /// The n-value is the replication factor of a bucket.
     int n_val() const
     {
         return n_val_;
@@ -53,7 +53,7 @@ public:
         allow_mult_ = allow;
     }
 
-    /// Set the <dfn>n_val</dfn> bucket property.    
+    /// Set the <dfn>n_val</dfn> bucket property.
     void n_val(int n)
     {
         n_val_ = n;

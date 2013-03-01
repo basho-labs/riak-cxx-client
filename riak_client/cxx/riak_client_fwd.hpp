@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
 #include <riak_client/cxx/common.hpp>
 #include <riak_client/cxx/util/shared_ptr.hpp>
 
-namespace riak { 
+namespace riak {
 
     class connection;
     typedef shared_ptr<connection> connection_ptr;
@@ -30,7 +30,7 @@ namespace riak {
 
     class object;
     typedef shared_ptr<object> object_ptr;
-    
+
 } // ::riak
 
 #endif // include guard

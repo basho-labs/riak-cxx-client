@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,8 @@
 
 namespace riak {
 
-class connection : private noncopyable  
-{ 
+class connection : private noncopyable
+{
 public:
     connection(const std::string& host, const std::string& port);
     ~connection();

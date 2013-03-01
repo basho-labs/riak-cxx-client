@@ -30,7 +30,7 @@ struct path_context
 
 struct command : public element
 {
-    command(const string& a1, func a2) 
+    command(const string& a1, func a2)
         : element(a1, a2) { }
     operator string() const { return first; }
     void operator()(const riak::string_vector& tokens);
@@ -72,7 +72,7 @@ public:
 
     void info(const riak::string_vector& args)
     {
-        
+
  //info_command(*this, args);
     }
 
@@ -87,7 +87,7 @@ public:
         {
             set_context("", "");
             return;
-        }   
+        }
         if (context_.bucket.empty())
             context_.bucket = args[1];
         else
@@ -111,7 +111,7 @@ public:
     {
 //        put_command(*this, args);
     }
-        
+
 
     template <typename F>
     void add_command(const std::string& name, F f)
@@ -153,7 +153,7 @@ public:
         context_.object = o;
     }
 
-    int stop() 
+    int stop()
     {
         cout << "exiting." << endl;
         done_ = true;
@@ -163,20 +163,20 @@ public:
     const std::string& prompt()
     {
         prompt_ = "<" + urlstr_ + "/" + context_.bucket;
-        if (!context_.key.empty()) 
+        if (!context_.key.empty())
             prompt_ += "/" + context_.key;
         prompt_ += "> ";
         return prompt_;
     }
-    
-    int run_once() 
+
+    int run_once()
     {
         reader_.GetLine(prompt(), tokens_, eoi_);
         if (eoi_) return stop();
         if (tokens_.empty()) { return 0; }
         if (*tokens_.begin() == "exit") { return stop(); }
         command_ = find_if(commands_.begin(), commands_.end(), lookup(tokens_));
-        if (command_ == commands_.end()) 
+        if (command_ == commands_.end())
         {
             cout << "Unknown command.  Type 'help' for a list of commands" << endl;
             return 0;
@@ -185,7 +185,7 @@ public:
         return 0;
     }
 
-    int run() 
+    int run()
     {
         cout << "riakc version 1.0" << endl;
         cout << "Type 'help' for more information, Ctrl+D to exit." << endl;
@@ -212,4 +212,4 @@ private:
 };
 
 
-#endif 
+#endif

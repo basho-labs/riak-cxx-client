@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,9 @@
 #include <riak_client/cxx/riak_client.hpp>
 #include <stdio.h>
 
-struct TEST_INIT 
+struct TEST_INIT
 {
-    TEST_INIT(const char *test_name, const char *file, int line) 
+    TEST_INIT(const char *test_name, const char *file, int line)
     {
         printf("[%s:%s:%d]\n", test_name, file, line);
     }

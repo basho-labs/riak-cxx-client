@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,8 +24,8 @@ class clobber_mutator
 {
 public:
     clobber_mutator(const T& new_value)
-        : new_value_(new_value) { } 
-    T operator()(const T& old_value) { 
+        : new_value_(new_value) { }
+    T operator()(const T& old_value) {
         return new_value_;
     }
 private:

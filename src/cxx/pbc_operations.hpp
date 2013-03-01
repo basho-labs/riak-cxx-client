@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@
 #include "pbc_message.hpp"
 #include "src/cxx/riakclient.pb.h"
 
-namespace riak { namespace pbc { 
+namespace riak { namespace pbc {
 
 
 template <class Request, class Response>

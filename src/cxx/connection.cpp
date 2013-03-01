@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 #include "connection.hpp"
 #include <riak_client/cxx/error.hpp>
 
-namespace riak { 
+namespace riak {
 
 namespace error = riakboost::asio::error;
 using boost::system::error_code;
@@ -30,7 +30,7 @@ connection::connection(const std::string& host, const std::string& port)
 {
 }
 
-connection::~connection() 
+connection::~connection()
 {
     socket_.close();
     io_service_.stop();
@@ -43,8 +43,8 @@ connection::start()
     io::ip::tcp::resolver::query q(host_, port_);
     io::ip::tcp::resolver::iterator end;
     error_code ec = error::host_not_found;
-    io::ip::tcp::resolver::iterator it = r.resolve(q);   
-    while (ec && it != end) { 
+    io::ip::tcp::resolver::iterator it = r.resolve(q);
+    while (ec && it != end) {
         socket_.close();
         socket_.connect(*it++, ec);
     }
@@ -53,7 +53,7 @@ connection::start()
     return true;
 }
 
-std::size_t 
+std::size_t
 connection::write(io::const_buffer buf) {
     error_code ec;
     std::size_t n = io::write(socket_, io::buffer(buf),
@@ -63,10 +63,10 @@ connection::write(io::const_buffer buf) {
     return n;
 }
 
-std::size_t 
+std::size_t
 connection::read(io::mutable_buffer buf) {
     error_code ec;
-    std::size_t n = io::read(socket_, io::buffer(buf), 
+    std::size_t n = io::read(socket_, io::buffer(buf),
                      io::transfer_all(), ec);
     if (ec)
         throw riak::exception(riak_error(ec.value(), ec.message()));

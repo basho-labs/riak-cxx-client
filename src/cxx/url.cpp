@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace riak { 
+namespace riak {
 
 url::url(const string& url_str)
 {
@@ -37,7 +37,7 @@ void url::parse(const string& url_s)
                   ptr_fun<int,int>(tolower));
         port_.assign(++port_i, path_i);
     }
-    else 
+    else
     {
         host_.reserve(distance(prot_i, path_i));
         transform(prot_i, path_i,

@@ -1,7 +1,7 @@
 /**
   @file    riak_metadata.hpp
   @brief   Riak Object Metadata */
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,7 +71,7 @@ public:
     void lastmod(lastmod_time_t lastmod);
     void lastmod(uint32_t secs, uint32_t usecs);
     void debug_print() const;
-private: 
+private:
     string_map  usermeta_;
     std::string content_type_;
     std::string charset_;
@@ -80,80 +80,80 @@ private:
     lastmod_time_t last_mod_;
 };
 
-inline const std::string& 
-riak_metadata::content_type() const 
-{ 
-    return content_type_; 
+inline const std::string&
+riak_metadata::content_type() const
+{
+    return content_type_;
 }
 
-inline const std::string& 
-riak_metadata::charset() const 
-{ 
-    return charset_; 
+inline const std::string&
+riak_metadata::charset() const
+{
+    return charset_;
 }
 
-inline const std::string& 
-riak_metadata::encoding() const 
-{ 
-    return encoding_; 
+inline const std::string&
+riak_metadata::encoding() const
+{
+    return encoding_;
 }
 
-inline const std::string& 
-riak_metadata::vtag() const 
-{ 
-    return vtag_; 
-}    
+inline const std::string&
+riak_metadata::vtag() const
+{
+    return vtag_;
+}
 
-inline const lastmod_time_t 
-riak_metadata::lastmod() const 
-{ 
-    return last_mod_; 
-}    
+inline const lastmod_time_t
+riak_metadata::lastmod() const
+{
+    return last_mod_;
+}
 
-inline const string_map&  
+inline const string_map&
 riak_metadata::usermeta() const
 {
     return usermeta_;
 }
 
-inline void 
-riak_metadata::content_type(const std::string& content_type) 
-{ 
-    content_type_ = content_type; 
+inline void
+riak_metadata::content_type(const std::string& content_type)
+{
+    content_type_ = content_type;
 }
 
-inline void 
-riak_metadata::charset(const std::string& charset) 
-{ 
-    charset_ = charset; 
+inline void
+riak_metadata::charset(const std::string& charset)
+{
+    charset_ = charset;
 }
 
-inline void 
-riak_metadata::encoding(const std::string& encoding) 
-{ 
-   encoding_ = encoding; 
+inline void
+riak_metadata::encoding(const std::string& encoding)
+{
+   encoding_ = encoding;
 }
 
-inline void 
+inline void
 riak_metadata::usermeta(const string_map& usermeta)
 {
     usermeta_ = usermeta;
 }
 
-inline void 
-riak_metadata::vtag(const std::string& vtag) 
-{ 
-    vtag_ = vtag; 
+inline void
+riak_metadata::vtag(const std::string& vtag)
+{
+    vtag_ = vtag;
 }
 
-inline void 
-riak_metadata::lastmod(lastmod_time_t lastmod) 
+inline void
+riak_metadata::lastmod(lastmod_time_t lastmod)
 {
     last_mod_ = lastmod;
 }
 
-inline void 
-riak_metadata::lastmod(uint32_t secs, uint32_t usecs) 
+inline void
+riak_metadata::lastmod(uint32_t secs, uint32_t usecs)
 {
     last_mod_ = lastmod_time_t(secs, usecs);
 }
