@@ -1,4 +1,5 @@
-#include <boost/test/unit_test.hpp>
+#define BOOST_TEST_MAIN
+#include <BoostTestTargetConfig.h>
 #include <riak_client/cxx/object/riak_metadata.hpp>
 
 

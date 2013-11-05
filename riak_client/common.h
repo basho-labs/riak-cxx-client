@@ -1,8 +1,6 @@
 #ifndef RIAKC_COMMON_H_
 #define RIAKC_COMMON_H_
 
-#include <riak_client/config.h>
-
 #ifndef __GNUC__
 #define  __attribute__(x) 
 #endif // __GNUC__

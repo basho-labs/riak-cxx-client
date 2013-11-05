@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+#include <iostream>
 #include "pbc_client.hpp"
 #include "pbc_operations.hpp"
 #include "pbc_header.hpp"
@@ -55,6 +56,14 @@ void encode_object(object_ptr obj, ops::put::request_type& req)
         l->set_key((*it).key());
         l->set_tag((*it).tag());
     }
+    for (index_vector::const_iterator it = obj->update_content().indexes().begin();
+         it != obj->update_content().indexes().end(); 
+         ++it)
+    {
+        RpbPair* i = c->add_indexes();
+        i->set_key((*it).key());
+        i->set_value((*it).value());
+    }
 }
 
 template <class T>
@@ -81,8 +90,15 @@ void decode_contents(const T& response, content_vector& contents)
             RpbLink pb_link = content.links(j);
             links.push_back(link(pb_link.bucket(), pb_link.key(), pb_link.tag()));
         }
+        index_vector indexes;
+        for (int j=0;j<content.indexes_size();++j)
+        {
+            RpbPair pb_index = content.indexes(j);
+            indexes.push_back(index(pb_index.key(), pb_index.value()));
+        }
         riak_content c(md, content.value());
         c.links(links);
+        c.indexes(indexes);
         contents.push_back(c);
     }
 }
@@ -281,6 +297,86 @@ pbc_client::list_keys(const string& bucket)
         pbc_recv(connection_, operation.response());
      } while (true);
     return result;
+}
+
+response<string_vector>
+pbc_client::index(const std::string& bucket, const std::string& index,
+		            const std::string& value)
+{
+	string_vector result;
+	ops::index operation;
+	operation.request().set_bucket(bucket);
+	operation.request().set_index(index);
+	operation.request().set_qtype(RpbIndexReq_IndexQueryType_eq);
+	operation.request().set_key(value);
+	riak_error error = execute(connection_, operation);
+	if (error) return error;
+	for (int i=0;i<operation.response().keys_size();++i)
+		result.push_back(operation.response().keys(i));
+	return result;
+}
+
+response<string_vector>
+pbc_client::index(const std::string& bucket, const std::string& index,
+    		        const std::string& min, const std::string& max)
+{
+	string_vector result;
+	ops::index operation;
+	ops::index::request_type& request = operation.request();
+	request.set_bucket(bucket);
+	request.set_index(index);
+	request.set_qtype(RpbIndexReq_IndexQueryType_range);
+	request.set_range_min(min);
+	request.set_range_max(max);
+	riak_error error = execute(connection_, operation);
+	if (error) return error;
+	for (int i=0;i<operation.response().keys_size();++i)
+		result.push_back(operation.response().keys(i));
+	return result;
+}
+
+response<string_map_vector>
+pbc_client::search(const std::string& query, const std::string& index,
+					 const string_vector& fl, int32_t rows, int32_t start,
+			         const std::string& sort, const std::string& filter,
+			         const std::string& df, const std::string& op,
+			         const std::string& presort)
+{
+	ops::search_query operation;
+	ops::search_query::request_type& request = operation.request();
+	request.set_q(query);
+	request.set_index(index);
+	for (string_vector::const_iterator i = fl.begin(); i != fl.end(); ++i)
+		request.add_fl(*i);
+	if (rows > 0)
+		request.set_rows(rows);
+	if (start > 0)
+		request.set_start(start);
+	if (!sort.empty())
+		request.set_sort(sort);
+	if (!filter.empty())
+		request.set_filter(filter);
+	if (!df.empty())
+		request.set_df(df);
+	if (!op.empty())
+		request.set_op(op);
+	if (!presort.empty())
+		request.set_presort(presort);
+	riak_error error = execute(connection_, operation);
+	if (error) return error;
+	string_map_vector result;
+	ops::search_query::response_type& response = operation.response();
+	for (int i = 0; i < response.docs_size(); ++i)
+	{
+		string_map fields;
+		const RpbSearchDoc& doc = response.docs(i);
+		for (int j = 0; j < doc.fields_size(); ++j) {
+			const RpbPair& field = doc.fields(j);
+			fields.insert(std::make_pair(field.key(), field.value()));
+		}
+		result.push_back(fields);
+	}
+	return result;
 }
 
 }} // ::riak::pbc

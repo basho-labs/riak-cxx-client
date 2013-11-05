@@ -13,14 +13,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-
-#define BOOST_TEST_MODULE pbc_test
-#include <boost/test/unit_test.hpp>
+#define BOOST_TEST_MAIN
+#include <BoostTestTargetConfig.h>
 #include <riak_client/cxx/riak_client.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <algorithm>
 #include <cstdio>
+#include <boost/asio.hpp>
 
 using std::string;
 
@@ -43,6 +43,8 @@ BOOST_AUTO_TEST_CASE (test_set_bucket)
     properties.allow_mult(true);
     properties.n_val(3);
     BOOST_REQUIRE(c->set_bucket(TEST_BUCKET, properties) == true);
+
+    // install_search_hook();
 }
 
 BOOST_AUTO_TEST_CASE (test_fetch_bucket)
@@ -65,9 +67,13 @@ BOOST_AUTO_TEST_CASE (test_put)
     if (fetch_result->not_found()) 
     {        
         o = riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY);
-        riak::link_vector v = o->update_content().links();
-        v.push_back(riak::link("foo", "bar", "baz"));
-        o->update_content().links(v);
+        riak::link_vector links = o->update_content().links();
+        links.push_back(riak::link("foo", "bar", "baz"));
+        o->update_content().links(links);
+
+        riak::index_vector indexes = o->update_content().indexes();
+        indexes.push_back(riak::index("foo_bin", "bar"));
+        o->update_content().indexes(indexes);
     }
     else 
         o = fetch_result->choose_sibling(0);
@@ -84,6 +90,34 @@ BOOST_AUTO_TEST_CASE (test_fetch)
     riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
     riak::result_ptr fr(c->fetch(TEST_BUCKET, TEST_KEY, 3));
     BOOST_REQUIRE(fr->contents()[0].value() == TEST_KEY);
+}
+
+BOOST_AUTO_TEST_CASE (test_index)
+{
+    riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
+    riak::string_vector v = c->index(TEST_BUCKET, "foo_bin", "bar");
+    BOOST_REQUIRE(std::find(v.begin(), v.end(), TEST_KEY) != v.end());
+    v = c->index(TEST_BUCKET, "foo_bin", "bab", "bas");
+    BOOST_REQUIRE(std::find(v.begin(), v.end(), TEST_KEY) != v.end());
+}
+
+BOOST_AUTO_TEST_CASE(test_search)
+{
+	riak::client_ptr c(riak::new_client("127.0.0.1", "8087"));
+	riak::store_params sp;
+	sp.w(-4).dw(-4).return_body(false);
+	riak::riak_metadata m;
+	m.content_type("application/json");
+	riak::object_ptr o1 = riak::make_object(TEST_BUCKET, "pig", "{\"animal\": \"pig\", \"name\": \"Fred\"}");
+	o1->update_metadata(m);
+	c->store(o1, sp);
+	riak::object_ptr o2 = riak::make_object(TEST_BUCKET, "pigeon", "{\"animal\": \"pigeon\", \"name\": \"Bob\"}");
+	o2->update_metadata(m);
+	c->store(o2, sp);
+
+	riak::string_vector fl;
+	riak::string_map_vector v = c->search("animal:pig*", TEST_BUCKET, fl, 100);
+	BOOST_REQUIRE(v.size() > 0);
 }
 
 BOOST_AUTO_TEST_CASE (test_list_buckets)
@@ -126,4 +160,3 @@ BOOST_AUTO_TEST_CASE (test_client)
     value = bucket.fetch("foo").r(3)();
     BOOST_REQUIRE(value == "bar");
 }
-
