@@ -48,8 +48,12 @@ public:
     {
         return store_object<T>(client_, name_, key).with_value(value);
     }
-    store_object<T>    store(const std::string& key, const char* buf, 
-                             std::size_t len);
+
+    store_object<T>    store(const std::string& key, const void* buf, 
+                             std::size_t len)
+    {
+        return store_object<T>(client_, name_, key).with_value(std::string(static_cast<const char*>(buf), len));
+    }
 
     delete_object      del(const std::string& key) 
     {

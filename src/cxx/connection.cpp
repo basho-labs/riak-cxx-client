@@ -19,7 +19,7 @@
 
 namespace riak { 
 
-namespace error = riakboost::asio::error;
+namespace error = boost::asio::error;
 using boost::system::error_code;
 
 connection::connection(const std::string& host, const std::string& port)
