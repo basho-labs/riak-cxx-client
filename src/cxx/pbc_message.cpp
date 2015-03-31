@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
 #include "pbc_header.hpp"
 #include <google/protobuf/message_lite.h>
 
-namespace riak { namespace pbc { 
+namespace riak { namespace pbc {
 
 bool pbc_serialize(msgcode_t code, pbc_storage& storage, const MessageLite* message)
 {
     pbc_header header(code, sizeof(code));
-    if (message) 
+    if (message)
     {
         header.size(header.size()+message->ByteSize());
-        message->SerializeToArray(storage.data()+pbc_header::HEADER_SIZE, 
+        message->SerializeToArray(storage.data()+pbc_header::HEADER_SIZE,
                                   storage.size());
     }
     header.serialize(storage.data(), pbc_header::HEADER_SIZE);
@@ -34,7 +34,7 @@ bool pbc_serialize(msgcode_t code, pbc_storage& storage, const MessageLite* mess
 }
 
 
-bool pbc_deserialize(msgcode_t code, const pbc_storage& storage, MessageLite* message) 
+bool pbc_deserialize(msgcode_t code, const pbc_storage& storage, MessageLite* message)
 {
     if (message)
     {

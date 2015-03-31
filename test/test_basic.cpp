@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,14 +62,14 @@ BOOST_AUTO_TEST_CASE (test_put)
     sp.w(3).dw(3).return_body(true);
     riak::result_ptr fetch_result = c->fetch(TEST_BUCKET, TEST_KEY, 2);
     riak::object_ptr o;
-    if (fetch_result->not_found()) 
-    {        
+    if (fetch_result->not_found())
+    {
         o = riak::make_object(TEST_BUCKET, TEST_KEY, TEST_KEY);
         riak::link_vector v = o->update_content().links();
         v.push_back(riak::link("foo", "bar", "baz"));
         o->update_content().links(v);
     }
-    else 
+    else
         o = fetch_result->choose_sibling(0);
     riak::string_map usermeta(o->update_metadata().usermeta());
     usermeta["foo"] = "bar";

@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace riak { 
+namespace riak {
 
 class RIAKC_API riak_error
 {

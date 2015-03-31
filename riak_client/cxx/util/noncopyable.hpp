@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 #ifndef RIAKCXX_NONCOPYABLE_HPP_
 #define RIAKCXX_NONCOPYABLE_HPP_
 
-namespace riak { 
+namespace riak {
 
 class noncopyable
 {

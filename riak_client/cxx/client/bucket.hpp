@@ -32,7 +32,7 @@
 namespace riak {
 
 template <class T=std::string>
-class RIAKC_API basic_bucket 
+class RIAKC_API basic_bucket
 {
 public:
     basic_bucket(const std::string& name, client_ptr c)
@@ -40,7 +40,7 @@ public:
 public:
     const std::string& name() const { return name_; }
     string_vector      keys() { return client_->list_keys(name_); }
-    fetch_object<T>    fetch(const std::string& key) 
+    fetch_object<T>    fetch(const std::string& key)
     {
         return fetch_object<T>(client_, name_, key);
     }
@@ -48,10 +48,10 @@ public:
     {
         return store_object<T>(client_, name_, key).with_value(value);
     }
-    store_object<T>    store(const std::string& key, const char* buf, 
+    store_object<T>    store(const std::string& key, const char* buf,
                              std::size_t len);
 
-    delete_object      del(const std::string& key) 
+    delete_object      del(const std::string& key)
     {
         return delete_object(client_, name_, key);
     }

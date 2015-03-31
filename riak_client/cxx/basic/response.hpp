@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +23,8 @@
 namespace riak {
 
 template <class T>
-class RIAKC_API response 
-{ 
+class RIAKC_API response
+{
  public: // constructors
     response(const riak_error& error)
         : error_(error), value_()  { }
@@ -34,11 +34,11 @@ class RIAKC_API response
  public: // accessors
     riak_error error() const { return error_; }
 
-    T value() { 
-        if (error_) { 
+    T value() {
+        if (error_) {
             throw exception(error_);
         }
-        return value_; 
+        return value_;
     }
     operator T() { return value(); }
     operator const T() const { return value(); }

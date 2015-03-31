@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@
 #include <riak_client/cxx/object/riak_content.hpp>
 #include <riak_client/cxx/object/riak_version.hpp>
 
-namespace riak { 
+namespace riak {
 
 class RIAKC_API object : public riak_version
 {
@@ -32,7 +32,7 @@ public: // constructors
     object(const riak_version& version, const riak_content& content)
         : riak_version(version), content_(content), update_content_(content) { }
 public: // accessors
-    const riak_content&  content() const { return content_; }   
+    const riak_content&  content() const { return content_; }
     const std::string&   value() const { return content_.value(); }
     const riak_metadata& metadata() const { return content_.metadata(); }
     const riak_metadata& update_metadata() const { return update_content_.metadata(); }
@@ -43,7 +43,7 @@ public: // mutators
     void                 debug_print() const;
 private: // intentionally copyable
     riak_content content_;
-    riak_content update_content_;     
+    riak_content update_content_;
 };
 
 inline object_ptr make_object(const std::string& bucket,const std::string& key)
@@ -51,7 +51,7 @@ inline object_ptr make_object(const std::string& bucket,const std::string& key)
     return object_ptr(new object(riak_bkey(bucket, key)));
 }
 
-inline object_ptr make_object(const std::string& bucket,const std::string& key, 
+inline object_ptr make_object(const std::string& bucket,const std::string& key,
                               const std::string& value)
 {
     riak_version version(riak_bkey(bucket, key));
@@ -61,14 +61,14 @@ inline object_ptr make_object(const std::string& bucket,const std::string& key,
 
 
 template <class T>
-T riak_object_cast(object_ptr p); 
+T riak_object_cast(object_ptr p);
 
 template <>
-inline std::string riak_object_cast<std::string>(object_ptr p) 
-{ 
+inline std::string riak_object_cast<std::string>(object_ptr p)
+{
     if (!p)
         return "";
-    return p->value(); 
+    return p->value();
 }
 
 } // ::riak

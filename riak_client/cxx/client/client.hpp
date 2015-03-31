@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@
 #include <riak_client/cxx/client/bucket.hpp>
 #include <riak_client/cxx/object.hpp>
 
-namespace riak { 
+namespace riak {
 
 class RIAKC_API client
 {
@@ -30,13 +30,13 @@ public:
     client(const std::string& host, const std::string& port)
         : basic_client_(riak::new_client(host, port)) { }
 public:
-    template <class T> 
-    basic_bucket<T> bucket(const std::string& name) 
+    template <class T>
+    basic_bucket<T> bucket(const std::string& name)
     {
         return basic_bucket<T>(name, basic_client_);
     }
 
-    uint32_t get_client_id() 
+    uint32_t get_client_id()
     {
         return basic_client_->client_id();
     }
@@ -46,7 +46,7 @@ public:
         basic_client_->client_id(client_id);
     }
 
-    string_vector list_buckets() 
+    string_vector list_buckets()
     {
         return basic_client_->list_buckets();
     }

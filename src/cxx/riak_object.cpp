@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,16 +22,16 @@
 
 namespace riak {
 
-riak_metadata::riak_metadata() 
+riak_metadata::riak_metadata()
 {
 }
 
 riak_metadata::riak_metadata(const string_map& usermeta)
-  : usermeta_(usermeta) 
+  : usermeta_(usermeta)
 {
 }
 
-void riak_metadata::debug_print() const 
+void riak_metadata::debug_print() const
 {
     std::cout << "content type: " << content_type() << std::endl;
     std::cout << "charset     : " <<  charset() << std::endl;

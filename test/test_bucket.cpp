@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@
 
 
 
-bool test_bucket() 
+bool test_bucket()
 {
     riak::client client("127.0.0.1", "8087");
     std::string bucket_name("mybucket");

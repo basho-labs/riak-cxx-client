@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 #include <cassert>
 #include <netinet/in.h>
 
-namespace riak { namespace pbc { 
+namespace riak { namespace pbc {
 
 void
 pbc_header::serialize(char* buf, std::size_t len) const
@@ -30,7 +30,7 @@ pbc_header::serialize(char* buf, std::size_t len) const
 }
 
 void
-pbc_header::deserialize(const char *buf, std::size_t len) 
+pbc_header::deserialize(const char *buf, std::size_t len)
 {
     assert(len >= 5);
     uint32_t *s = (uint32_t *)buf;

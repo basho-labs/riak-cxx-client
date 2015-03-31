@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
 #include <riak_client/cxx/basic/riak_result.hpp>
 #include <riak_client/cxx/object/riak_object.hpp>
 
-namespace riak { 
+namespace riak {
 
 struct RIAKC_API default_resolver
 {

@@ -19,9 +19,9 @@
 
 #include <riak_client/cxx/riak_client_fwd.hpp>
 
-namespace riak { 
+namespace riak {
 
-    struct quora 
+    struct quora
     {
         quora() : qval_(-1) {}
         quora(int val) : qval_(val) {}
@@ -33,8 +33,8 @@ namespace riak {
     struct ONE : quora {};
     struct ALL : quora {};
     struct QUORUM : quora {};
-    struct DEFAULT : quora {}; 
-    
+    struct DEFAULT : quora {};
+
 } // :: riak
 
 #endif // include guard

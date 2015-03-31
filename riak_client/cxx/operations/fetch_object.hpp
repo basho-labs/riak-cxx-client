@@ -23,7 +23,7 @@
 #include <riak_client/cxx/client/resolver.hpp>
 #include <string>
 
-namespace riak { 
+namespace riak {
 
 template <typename T=std::string, class resolver=default_resolver>
 struct RIAKC_API fetch_object
@@ -32,19 +32,19 @@ struct RIAKC_API fetch_object
                  const std::string& key)
         : client_(client), bucket_(bucket), key_(key), r_(-1) {}
 public:
-    fetch_object<T> r(int r) 
+    fetch_object<T> r(int r)
     {
         r_ = r;
         return *this;
     }
-    
-    response<T> operator()() { 
+
+    response<T> operator()() {
         response<result_ptr> result(client_->fetch(bucket_, key_, r_));
         if (result.error()) return result.error();
         riak::object_ptr o(resolver().resolve(result));
         return riak_object_cast<T>(o);
     }
-    
+
 private:
     client_ptr client_;
     std::string bucket_;

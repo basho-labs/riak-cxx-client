@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include "pbc_fwd.hpp"
 
-namespace riak { namespace pbc { 
+namespace riak { namespace pbc {
 
 class pbc_header
 {

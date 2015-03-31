@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,14 @@
 #include <string>
 #include <vector>
 
-namespace riak { 
+namespace riak {
 
 class RIAKC_API link
 {
 public:
     link(const std::string& bucket, const std::string& key)
        : bkey_(bucket, key) { }
-    link(const std::string& bucket, const std::string& key, 
+    link(const std::string& bucket, const std::string& key,
         const std::string& tag)
         : bkey_(bucket, key), tag_(tag) { }
 public:

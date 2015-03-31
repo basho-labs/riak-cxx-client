@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,23 +22,23 @@
 #include <string>
 #include <stdint.h>
 
-namespace riak { namespace pbc { 
+namespace riak { namespace pbc {
 
 class pbc_client : public riak::basic_client
-{ 
+{
 public:
     pbc_client(const std::string& host, const std::string& port);
     virtual ~pbc_client();
 public:
     response<bool> ping();
     response<server_info> get_server_info();
-    response<bool> del(const std::string& bucket, const std::string& key, 
+    response<bool> del(const std::string& bucket, const std::string& key,
                        int dw);
-    response<bool> set_bucket(const std::string& bucket, 
+    response<bool> set_bucket(const std::string& bucket,
                               const bucket_properties& properties);
     response<bool> client_id(uint32_t client_id);
     response<uint32_t>      client_id();
-    response<result_ptr>  fetch(const std::string& bucket, 
+    response<result_ptr>  fetch(const std::string& bucket,
                                  const std::string& key, int r);
     response<result_ptr>  store(object_ptr object, const store_params& params);
     response<string_vector> list_buckets();

@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@
 
 #include <riak_client/cxx/basic/quorum.hpp>
 
-namespace riak { 
+namespace riak {
 
-class RIAKC_API store_params 
+class RIAKC_API store_params
 {
 public:
     store_params()
@@ -35,9 +35,9 @@ public: // mutators
     store_params& w(quora w) { w_ = w; return *this;}
     store_params& dw(quora dw) { dw_ = dw; return *this;}
     store_params& pw(quora pw) { pw_ = pw; return *this; }
-    store_params& return_body(bool returnbody) 
-    { 
-        return_body_ = returnbody; 
+    store_params& return_body(bool returnbody)
+    {
+        return_body_ = returnbody;
         return *this;
     }
 private: // intentionally copyable

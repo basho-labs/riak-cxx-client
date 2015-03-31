@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,7 +64,7 @@ void decode_contents(const T& response, content_vector& contents)
     {
         RpbContent content = response.content(i);
         string_map usermeta;
-        for (int j=0;j<content.usermeta_size();++j) 
+        for (int j=0;j<content.usermeta_size();++j)
         {
             RpbPair pb_metadata = content.usermeta(j);
             usermeta[pb_metadata.key()] = pb_metadata.value();
@@ -87,19 +87,19 @@ void decode_contents(const T& response, content_vector& contents)
     }
 }
 
-const pbc_header 
-pbc_recv_header(connection_ptr c, riak_error& error) 
+const pbc_header
+pbc_recv_header(connection_ptr c, riak_error& error)
 {
     pbc_header header;
     char header_buf[5];
     c->read(io::buffer(&header_buf[0], 5));
     header.deserialize(header_buf, pbc_header::HEADER_SIZE);
-    if (header.code() == ERROR) 
+    if (header.code() == ERROR)
     {
         pbc_storage storage(header.size());
         error_resp err;
-        c->read(io::buffer(storage.data(), storage.size()));        
-        err.deserialize(storage);  
+        c->read(io::buffer(storage.data(), storage.size()));
+        err.deserialize(storage);
         error.code(err.errcode());
         error.message(err.errmsg());
     }
@@ -119,7 +119,7 @@ std::size_t pbc_recv(connection_ptr c,  Message& m)
     m.deserialize(storage);
     return riak_error();
 }
-    
+
 
 template <class Operation>
 riak_error execute(connection_ptr c, Operation& op)
@@ -142,9 +142,9 @@ pbc_client::pbc_client(const string& host, const string& port)
 pbc_client::~pbc_client()
 {
 }
-  
+
 response<bool>
-pbc_client::ping() 
+pbc_client::ping()
 {
     ops::ping operation;
     riak_error error = execute(connection_, operation);
@@ -152,18 +152,18 @@ pbc_client::ping()
     return true;
 }
 
-response<server_info> 
+response<server_info>
 pbc_client::get_server_info()
 {
     ops::get_server_info operation;
     riak_error error = execute(connection_, operation);
     if (error) return error;
-    server_info s(operation.response().node(), 
+    server_info s(operation.response().node(),
                   operation.response().server_version());
     return s;
 }
 
-response<bool>  
+response<bool>
 pbc_client::del(const string& bucket, const string& key, int dw)
 {
     ops::del operation;
@@ -176,7 +176,7 @@ pbc_client::del(const string& bucket, const string& key, int dw)
 }
 
 
-response<result_ptr>   
+response<result_ptr>
 pbc_client::fetch(const string& bucket, const string& key, int r)
 {
     ops::get operation;
@@ -216,7 +216,7 @@ pbc_client::fetch_bucket(const string& bucket)
     return bprops;
 }
 
-response<uint32_t>   
+response<uint32_t>
 pbc_client::client_id()
 {
     ops::get_client_id operation;
@@ -227,8 +227,8 @@ pbc_client::client_id()
     return *id;
 }
 
-response<bool>       
-pbc_client::client_id(uint32_t client_id) 
+response<bool>
+pbc_client::client_id(uint32_t client_id)
 {
     client_id_ = client_id;
     ops::set_client_id operation;
@@ -275,7 +275,7 @@ pbc_client::list_keys(const string& bucket)
     riak_error error = execute(connection_, operation);
     if (error) return error;
     do {
-        for (int i=0;i<operation.response().keys_size();++i) 
+        for (int i=0;i<operation.response().keys_size();++i)
             result.push_back(operation.response().keys(i));
         if (operation.response().done()) break;
         pbc_recv(connection_, operation.response());

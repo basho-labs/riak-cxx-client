@@ -1,4 +1,4 @@
-/*  
+/*
  Copyright 2011 Basho Technologies, Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,11 +37,11 @@ struct riak_object_t
 riak_client riak_client_new(const char* host, const char *port)
 {
     riak_client_t* c = (riak_client_t*)malloc(sizeof(riak_client));
-    try 
-    { 
+    try
+    {
         c->p = riak::new_client(host, port);
     }
-    catch (riak::exception& e) 
+    catch (riak::exception& e)
     {
         free(c);
         errno = e.error_code();
@@ -56,7 +56,7 @@ riak_client riak_client_new(const char* host, const char *port)
     return c;
 }
 
-void riak_client_free(riak_client c) { 
+void riak_client_free(riak_client c) {
     c->p.reset();
     free(c);
 }
@@ -64,7 +64,7 @@ void riak_client_free(riak_client c) {
 int riak_ping(riak_client c)
 {
     riak::response<bool> response = c->p->ping();
-    if (response.error()) 
+    if (response.error())
     {
         errno = response.error().code();
         return -1;
@@ -76,7 +76,7 @@ int riak_ping(riak_client c)
 int riak_set_client_id(riak_client c, uint32_t id)
 {
     riak::response<bool> response = c->p->client_id(id);
-    if (response.error()) 
+    if (response.error())
     {
         errno = response.error().code();
         return -1;
@@ -89,7 +89,7 @@ int riak_set_client_id(riak_client c, uint32_t id)
 uint32_t riak_get_client_id(riak_client c)
 {
     riak::response<uint32_t> response = c->p->client_id();
-    if (response.error()) 
+    if (response.error())
     {
         errno = response.error().code();
         return -1;
@@ -158,7 +158,7 @@ const vclock riak_object_get_vclock(riak_object o)
 {
     riak::result_ptr obj(o->p);
     std::string vstr(obj->vclock());
-    if (vstr.empty()) 
+    if (vstr.empty())
         return 0;
     size_t vclen = vstr.size();
     vclock vc = (vclock)(malloc(sizeof(size_t)+vclen));
