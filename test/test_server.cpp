@@ -19,7 +19,7 @@ struct test_object
 struct test_bucket
 {
   std::string name;
-  bool allow_mult;
+  bool allow_mult;/* bool keyword and can only take the values true or false */
   int n_val;
   std::map<std::string, test_object> objects;
 };
